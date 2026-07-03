@@ -16,6 +16,9 @@ export const logger = pino({
               translateTime: 'HH:MM:ss',
               ignore: 'pid,hostname',
               singleLine: false,
+              customLevels: {
+                8: 'service',
+              },
             }
           : { destination: 1 },
         level: isDev ? 'debug' : 'info',
