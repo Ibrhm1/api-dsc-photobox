@@ -1,3 +1,3 @@
-export type CustomersType = {
-  // TODO: Definisikan tipe data
-};
+import type { customers } from '../infrastructure/database/schemas';
+
+export type InsertCustomersType = typeof customers.$inferInsert;

@@ -1,4 +1,5 @@
 import type { Response } from "express";
+import { contextStorage } from "../infrastructure/logging/context";
 
 type ResponseParamsType = {
   res: Response;
@@ -26,8 +27,11 @@ const success = ({
 };
 
 const error = ({ res, code, message, details, errors }: ResponseParamsType) => {
+  const store = contextStorage.getStore();
+
   return res.status(code).json({
     message,
+    ...(store?.requestId && { requestId: store.requestId }),
     ...(errors && { errors }),
     ...(details && { details }),
   });

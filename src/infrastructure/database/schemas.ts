@@ -20,21 +20,21 @@ export const photoSessions = pgTable('photo_sessions', {
 
 export const customers = pgTable('customers', {
   id: uuid('id').defaultRandom().primaryKey(),
-  // Foreign Key untuk Relasi One-to-One dengan Cascade Delete
   sessionId: varchar('session_id', { length: 100 })
     .notNull()
     .unique()
     .references(() => photoSessions.id, { onDelete: 'cascade' }),
   name: varchar('name', { length: 100 }).notNull(),
   email: varchar('email', { length: 50 }).notNull().unique(),
+  npm: varchar('npm', { length: 15 }).notNull(),
+  major: varchar('major', { length: 100 }).notNull(),
   phoneNumber: varchar('phone_number', { length: 20 }),
-  instagramUsername: varchar('instagram_username', { length: 50 }).notNull(),
+  instagramUsername: varchar('instagram_username', { length: 100 }).notNull(),
   createdAt: timestamp('createdAt', { precision: 6 }).defaultNow().notNull(),
 });
 
 export const photos = pgTable('photos', {
   id: uuid('id').defaultRandom().primaryKey(),
-  // Foreign Key untuk Relasi One-to-Many dengan Cascade Delete
   sessionId: varchar('session_id', { length: 100 })
     .notNull()
     .references(() => photoSessions.id, { onDelete: 'cascade' }),
