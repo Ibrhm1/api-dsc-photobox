@@ -1,8 +1,8 @@
 import express from 'express';
-import router from './routes/route';
-import { notFoundMiddleware } from './middlewares/notFound.middleware';
 import { errorMiddleware } from './middlewares/error.middleware';
+import { notFoundMiddleware } from './middlewares/notFound.middleware';
 import { requestIdMiddleware } from './middlewares/requestId.middleware';
+import router from './routes/route';
 
 const app = express();
 

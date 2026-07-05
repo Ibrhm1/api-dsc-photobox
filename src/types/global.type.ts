@@ -1,3 +1,4 @@
+import type multer from 'multer';
 import type { Logger } from 'pino';
 
 declare global {
@@ -5,6 +6,9 @@ declare global {
     interface Request {
       requestId?: string;
       log?: Logger;
+    }
+    interface Express {
+      Multer: typeof multer;
     }
   }
 }
