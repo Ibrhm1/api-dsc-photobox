@@ -40,7 +40,23 @@ const adminLogin = async (data: LoginAdminType) => {
   return { data: { session, updateLastLoginAdmin }, error: null };
 };
 
+const getAdminLogin = async (id: string) => {
+  const [data] = await db.select().from(admins).where(eq(admins.id, id));
+
+  return data;
+};
+
+const adminLogOut = async () => {
+  const { error } = await supabase.auth.signOut({
+    scope: 'global',
+  });
+
+  return error;
+};
+
 export const adminsRepository = {
   createAdmin,
-  login: adminLogin,
+  adminLogin,
+  getAdminLogin,
+  adminLogOut,
 };

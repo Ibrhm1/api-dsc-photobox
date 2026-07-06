@@ -5,5 +5,6 @@ import { uploadFiles } from '../middlewares/upload.middleware';
 const photosRoute = Router();
 
 photosRoute.post('/:sessionId', uploadFiles('files'), photosController.create);
+photosRoute.get('/:sessionId', photosController.getAll);
 
 export { photosRoute };

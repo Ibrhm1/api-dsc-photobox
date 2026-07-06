@@ -9,7 +9,7 @@ const setCache = async ({ key, data, ttl = 3000 }: SetCacheType) => {
     {
       service: serviceName,
       key,
-      data,
+      ...data,
       ttl,
     },
     'SET DATA',
@@ -50,4 +50,6 @@ export const cacheService = {
 export const cacheKey = {
   session: (id?: string) => (id ? `admin:session:${id}` : `admin:session`),
   customers: () => 'admin:customers',
+  photos: (sessionId: string) => `photos:session:${sessionId}`,
+  admin: (id: string) => `admin:${id}`,
 };

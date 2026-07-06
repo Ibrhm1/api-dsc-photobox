@@ -1,7 +1,8 @@
 import { admins } from '../infrastructure/database/schemas';
 
-export type RegisterAdminType = {
-  email: string;
+export type AdminType = typeof admins.$inferSelect;
+
+export type RegisterAdminType = Pick<AdminType, 'email'> & {
   password: string;
   confirmPassword: string;
 };

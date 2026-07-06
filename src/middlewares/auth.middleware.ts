@@ -1,55 +1,18 @@
 import type { NextFunction, Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
 import { eq } from 'drizzle-orm';
+import crypto from 'crypto';
 import { db } from '../infrastructure/database/drizzle';
 import { admins } from '../infrastructure/database/schemas';
 import { logger } from '../infrastructure/logging/logger';
-import { env } from '../utils/env';
+import { supabase } from '../infrastructure/database/supabase';
 import { responseSchema } from '../utils/responseServer';
+import { cacheService } from '../infrastructure/cache/cache.service';
 
 const middlewareName = '[Auth Middleware]';
 
-const decodeToken = (
-  res: Response,
-  token: string,
-): string | undefined | void => {
-  try {
-    const decoded = jwt.verify(token, env.SUPABASE_JWT_SECRET, {
-      algorithms: ['HS256'],
-    }) as jwt.JwtPayload;
-
-    if (!decoded.sub) {
-      logger.warn(
-        {
-          service: middlewareName,
-        },
-        'Token tidak memiliki subject (sub)',
-      );
-      responseSchema.error({
-        res,
-        code: 401,
-        message: 'Token tidak valid',
-      });
-      return;
-    }
-
-    return decoded.sub;
-  } catch (error) {
-    const err = error as Error;
-    logger.warn(
-      {
-        service: middlewareName,
-        message: err.message,
-      },
-      'Verifikasi token gagal',
-    );
-    responseSchema.error({
-      res,
-      code: 401,
-      message: 'Token tidak valid atau kedaluwarsa',
-    });
-    return;
-  }
+// Fungsi pembantu untuk hash token agar key Redis tidak terlalu panjang
+const hashToken = (token: string): string => {
+  return crypto.createHash('sha256').update(token).digest('hex');
 };
 
 export const authMiddleware = async (
@@ -64,7 +27,6 @@ export const authMiddleware = async (
       logger.warn(
         {
           service: middlewareName,
-          header: authHeader,
         },
         'Otorisasi salah atau tidak ada token',
       );
@@ -92,9 +54,49 @@ export const authMiddleware = async (
       return;
     }
 
-    const userId = decodeToken(res, token);
-    if (!userId) {
-      return;
+    const tokenHash = hashToken(token);
+    const cacheKeyToken = `auth:token:${tokenHash}`;
+
+    // 1. Cek apakah userId token ini ada di cache Redis
+    const cachedToken = await cacheService.get<{ userId: string }>({ key: cacheKeyToken });
+    let userId = cachedToken?.userId;
+
+    if (userId) {
+      // Cache HIT: Token valid & langsung gunakan userId dari Redis
+      logger.debug(
+        {
+          service: middlewareName,
+        },
+        'Verifikasi token berhasil (dari Cache Redis)',
+      );
+    } else {
+      // Cache MISS: Tanya ke Supabase
+      const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+
+      if (authError || !user) {
+        logger.warn(
+          {
+            service: middlewareName,
+            error: authError?.message,
+          },
+          'Verifikasi token Supabase gagal (kemungkinan sudah logout/expired)',
+        );
+        responseSchema.error({
+          res,
+          code: 401,
+          message: 'Sesi telah berakhir, silakan login kembali',
+        });
+        return;
+      }
+
+      userId = user.id;
+
+      // 2. Simpan userId ke Redis dengan TTL 2 menit (120 detik)
+      await cacheService.set({
+        key: cacheKeyToken,
+        data: { userId },
+        ttl: 120, // 2 menit
+      });
     }
 
     const [dbAdmin] = await db
@@ -107,9 +109,9 @@ export const authMiddleware = async (
       logger.warn(
         {
           service: middlewareName,
-          adminId: userId,
+          userId,
         },
-        'Admin tidak terdaftar di database',
+        'Admin dengan ID tersebut tidak terdaftar di database',
       );
       responseSchema.error({
         res,
@@ -126,9 +128,9 @@ export const authMiddleware = async (
     logger.error(
       {
         service: middlewareName,
-        ...err,
+        error: err.message,
       },
-      'Terjadi kesalahan server internal',
+      'Kesalahan sistem pada Auth Middleware',
     );
     responseSchema.error({
       res,

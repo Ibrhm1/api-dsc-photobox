@@ -5,7 +5,6 @@ import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './docs/swagger';
 import { errorMiddleware } from './middlewares/error.middleware';
 import { notFoundMiddleware } from './middlewares/notFound.middleware';
-import { limiter } from './middlewares/rateLimit.middleware';
 import { requestIdMiddleware } from './middlewares/requestId.middleware';
 import healthRoute from './routes/health.route';
 import router from './routes/route';
@@ -16,7 +15,6 @@ const app = express();
 // Middleware
 app.use(helmet());
 app.use(cors({ origin: env.ORIGIN_ALLOWED }));
-app.use(limiter);
 app.use(express.json());
 app.use(requestIdMiddleware);
 

@@ -22,6 +22,23 @@ const create = async (req: Request, res: Response) => {
   });
 };
 
+const getAll = async (req: Request, res: Response) => {
+  const { sessionId } = req.params;
+
+  const { photos, fromCache } = await photosService.getAllPhotosBySessionId(
+    sessionId as string,
+  );
+
+  return responseSchema.success({
+    res,
+    code: 200,
+    data: photos,
+    message: 'Berhasil mendapatkan photos',
+    fromCache,
+  });
+};
+
 export const photosController = {
   create,
+  getAll,
 };
