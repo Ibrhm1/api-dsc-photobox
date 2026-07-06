@@ -1,11 +1,12 @@
 import z from 'zod';
+import { emailActiveValidation } from './global.validation';
 
 const createCustomerValidation = z.object({
   name: z
     .string('Nama harus berupa string')
     .min(1, 'Nama wajib diisi')
     .max(100, 'Nama maksimal 100 karakter'),
-  email: z.email('Format email tidak valid').trim(),
+  email: emailActiveValidation,
   npm: z
     .string('NPM harus berupa string')
     .min(1, 'NPM wajib diisi')

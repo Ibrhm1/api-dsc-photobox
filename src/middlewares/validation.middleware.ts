@@ -2,9 +2,9 @@ import type { NextFunction, Request, Response } from 'express';
 import type { ZodSchema } from 'zod';
 
 export const validateBody = (schema: ZodSchema) => {
-  return (req: Request, _res: Response, next: NextFunction) => {
+  return async (req: Request, _res: Response, next: NextFunction) => {
     try {
-      req.body = schema.parse(req.body);
+      req.body = await schema.parseAsync(req.body);
       next();
     } catch (error) {
       next(error);

@@ -23,22 +23,21 @@ export const logger = pino({
       '*.phoneNumber',
       'data[*].phoneNumber',
       '*[*].phoneNumber',
-      // Email (Rekomendasi tambahan)
-      'email',
-      '*.email',
-      'data[*].email',
-      '*[*].email',
+      //password
+      'password',
+      '*.password',
+      'data[*].password',
+      '*[*].password',
+      //confirmPassword
+      'confirmPassword',
+      '*.confirmPassword',
+      'data[*].confirmPassword',
+      '*[*].confirmPassword',
       // Kredensial
       'token',
-      'accessToken',
-      'refreshToken',
-      'password',
-      'authorization',
-      '*.authorization',
     ],
     censor: '[REDACTED]',
   },
-
   transport: {
     targets: [
       {
