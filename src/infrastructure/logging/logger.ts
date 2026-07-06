@@ -12,9 +12,33 @@ export const logger = pino({
     return store ? { requestId: store.requestId } : {};
   },
   redact: {
-    paths: ['npm', 'token'],
+    paths: [
+      // NPM
+      'npm',
+      '*.npm',
+      'data[*].npm',
+      '*[*].npm',
+      // Nomor Telepon
+      'phoneNumber',
+      '*.phoneNumber',
+      'data[*].phoneNumber',
+      '*[*].phoneNumber',
+      // Email (Rekomendasi tambahan)
+      'email',
+      '*.email',
+      'data[*].email',
+      '*[*].email',
+      // Kredensial
+      'token',
+      'accessToken',
+      'refreshToken',
+      'password',
+      'authorization',
+      '*.authorization',
+    ],
     censor: '[REDACTED]',
   },
+
   transport: {
     targets: [
       {

@@ -5,3 +5,4 @@ resource.js
 logs/
 migrations/
 audit.md
+dist/

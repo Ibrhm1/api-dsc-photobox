@@ -1,4 +1,5 @@
 import { AppError } from '../errors/appError';
+import { cacheKey, cacheService } from '../infrastructure/cache/cache.service';
 import { logger } from '../infrastructure/logging/logger';
 import { customersRepository } from '../repositories/customers.repository';
 import { photoSessionsRepository } from '../repositories/photoSessions.repository';
@@ -50,38 +51,6 @@ const createCustomerBySessionId = async (payload: InsertCustomersType) => {
   return customer;
 };
 
-const getAllDataCustomers = async () => {
-  logger.info(
-    {
-      service: serviceName,
-    },
-    'Mulai proses pengambilan data customer',
-  );
-
-  const customersData = await customersRepository.getAllCustomers();
-
-  if (customersData.length === 0) {
-    logger.warn(
-      {
-        service: serviceName,
-        customersData,
-      },
-      'Data customer tidak ditemukan',
-    );
-    throw new AppError(404, `Data customer tidak ditemukan`);
-  }
-
-  logger.info(
-    {
-      service: serviceName,
-    },
-    'Selesai proses pengambilan data customer',
-  );
-
-  return customersData;
-};
-
 export const customersService = {
   createCustomerBySessionId,
-  getAllDataCustomers,
 };

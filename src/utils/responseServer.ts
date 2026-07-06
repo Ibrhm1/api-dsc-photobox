@@ -1,5 +1,5 @@
-import type { Response } from "express";
-import { contextStorage } from "../infrastructure/logging/context";
+import type { Response } from 'express';
+import { contextStorage } from '../infrastructure/logging/context';
 
 type ResponseParamsType = {
   res: Response;

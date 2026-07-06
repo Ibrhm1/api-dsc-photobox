@@ -12,7 +12,7 @@ export const envSchema = z.object({
   SUPABASE_URL: z.url('SUPABASE_URL harus berupa URL'),
   SUPABASE_ANON_KEY: z.string('SUPABASE_ANON_KEY harus berupa string'),
   // SUPABASE_JWT_SECRET: z.string('SUPABASE_JWT_SECRET harus berupa string'),
-  // REDIS_URL: z.url('REDIS_URL harus berupa URL'),
+  REDIS_URL: z.url('REDIS_URL harus berupa URL'),
   // RABBITMQ_URL: z.url('RABBITMQ_URL harus berupa URL'),
   // MAIL_HOST: z.string('MAIL_HOST harus berupa string'),
   // MAIL_PORT: z.coerce.number('MAIL_PORT harus berupa angka'),

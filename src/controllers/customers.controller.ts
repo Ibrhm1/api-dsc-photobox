@@ -27,18 +27,6 @@ const create = async (req: Request, res: Response) => {
   });
 };
 
-const getAll = async (req: Request, res: Response) => {
-  const customersData = await customersService.getAllDataCustomers();
-
-  return responseSchema.success({
-    res,
-    code: 200,
-    message: 'Data berhasil diambil',
-    data: customersData,
-  });
-};
-
 export const customersController = {
   create,
-  getAll,
 };
