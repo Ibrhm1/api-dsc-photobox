@@ -7,7 +7,7 @@ export const envSchema = z.object({
     .enum(['development', 'staging', 'production'])
     .default('development'),
   BASE_URL: z.url('BASE_URL harus berupa URL'),
-  // ORIGIN_ALLOWED: z.url('ORIGIN_ALLOWED harus berupa URL'),
+  ORIGIN_ALLOWED: z.url('ORIGIN_ALLOWED harus berupa URL'),
   DATABASE_URL: z.url('DATABASE_URL harus berupa URL'),
   SUPABASE_URL: z.url('SUPABASE_URL harus berupa URL'),
   SUPABASE_ANON_KEY: z.string('SUPABASE_ANON_KEY harus berupa string'),

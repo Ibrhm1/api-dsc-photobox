@@ -19,16 +19,16 @@ const formateNameFile = (
 };
 
 const uploadFiles = ({ files, sessionId }: UploadFileParamsType) => {
+  logger.info(
+    {
+      service: serviceName,
+      totalFiles: files.length,
+      sessionId,
+    },
+    'Memulai upload file',
+  );
   return Promise.all(
     files.map(async (file, fileIdx) => {
-      logger.info(
-        {
-          service: serviceName,
-          fileIndex: fileIdx,
-        },
-        'Memulai upload file',
-      );
-
       const fileName = formateNameFile(file.originalname, fileIdx, sessionId);
       const filePath = `${sessionId}/original/${fileName}`;
       const fileBody = new Uint8Array(file.buffer).buffer;

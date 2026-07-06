@@ -4,3 +4,4 @@ node_modules/
 resource.js
 logs/
 migrations/
+audit.md

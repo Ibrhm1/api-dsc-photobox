@@ -1,5 +1,6 @@
 import type multer from 'multer';
 import type { Logger } from 'pino';
+import type { db } from '../infrastructure/database/drizzle';
 
 declare global {
   namespace Express {
@@ -12,3 +13,5 @@ declare global {
     }
   }
 }
+
+export type Transaction = Parameters<Parameters<typeof db.transaction>[0]>[0];

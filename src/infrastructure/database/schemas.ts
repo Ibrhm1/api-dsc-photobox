@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm/_relations';
-import { pgTable, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
+import { index, pgTable, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
 
 // ==========================================
 // 1. DEFINISI TABEL (SKEMA FISIK)
@@ -33,16 +33,20 @@ export const customers = pgTable('customers', {
   createdAt: timestamp('createdAt', { precision: 6 }).defaultNow().notNull(),
 });
 
-export const photos = pgTable('photos', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  sessionId: varchar('session_id', { length: 100 })
-    .notNull()
-    .references(() => photoSessions.id, { onDelete: 'cascade' }),
-  folderName: varchar('folder_name', { length: 100 }).notNull(),
-  fileName: varchar('file_name', { length: 255 }).notNull(),
-  fileUrl: varchar('file_url', { length: 255 }).notNull(),
-  createdAt: timestamp('createdAt', { precision: 6 }).defaultNow().notNull(),
-});
+export const photos = pgTable(
+  'photos',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    sessionId: varchar('session_id', { length: 100 })
+      .notNull()
+      .references(() => photoSessions.id, { onDelete: 'cascade' }),
+    folderName: varchar('folder_name', { length: 100 }).notNull(),
+    fileName: varchar('file_name', { length: 255 }).notNull(),
+    fileUrl: varchar('file_url', { length: 255 }).notNull(),
+    createdAt: timestamp('createdAt', { precision: 6 }).defaultNow().notNull(),
+  },
+  (table) => [index('photos_session_id_idx').on(table.sessionId)],
+);
 
 // ==========================================
 // 2. DEFINISI RELASI (UNTUK QUERY BUILDER)

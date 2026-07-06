@@ -1,5 +1,5 @@
 import { desc, eq } from 'drizzle-orm';
-import { db } from '../infrastructure/database/drizzel';
+import { db } from '../infrastructure/database/drizzle';
 import { customers } from '../infrastructure/database/schemas';
 import type { InsertCustomersType } from '../types/customers.type';
 
