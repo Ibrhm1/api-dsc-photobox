@@ -1,0 +1,52 @@
+export const requestBodyRegisterAdmin = {
+  required: true,
+  content: {
+    'application/json': {
+      schema: {
+        type: 'object',
+        required: ['email', 'password', 'confirmPassword'],
+        properties: {
+          email: {
+            type: 'string',
+            format: 'email',
+            example: 'admin@example.com',
+          },
+          password: {
+            type: 'string',
+            format: 'password',
+            example: 'password123',
+          },
+          confirmPassword: {
+            type: 'string',
+            format: 'password',
+            example: 'password123',
+          },
+        },
+      },
+    },
+  },
+};
+
+export const requestBodyLoginAdmin = {
+  required: true,
+  content: {
+    'application/json': {
+      schema: {
+        type: 'object',
+        required: ['email', 'password'],
+        properties: {
+          email: {
+            type: 'string',
+            format: 'email',
+            example: 'admin@example.com',
+          },
+          password: {
+            type: 'string',
+            format: 'password',
+            example: 'password123',
+          },
+        },
+      },
+    },
+  },
+};

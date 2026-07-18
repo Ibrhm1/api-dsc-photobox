@@ -48,8 +48,9 @@ export const cacheService = {
 };
 
 export const cacheKey = {
-  session: (id?: string) => (id ? `admin:session:${id}` : `admin:session`),
-  customers: () => 'admin:customers',
-  photos: (sessionId: string) => `photos:session:${sessionId}`,
   admin: (id: string) => `admin:${id}`,
+  authToken: (tokenHash: string) => `auth:token:${tokenHash}`,
+  customers: () => 'admin:customers',
+  session: (id?: string) => (id ? `admin:session:${id}` : `admin:session`),
+  photos: (sessionId: string) => `photos:session:${sessionId}`,
 };

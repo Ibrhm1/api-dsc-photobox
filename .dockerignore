@@ -1,0 +1,8 @@
+node_modules/
+.env*
+!.env.example
+resource.js
+logs/
+audit.md
+dist/
+test-emails.ts

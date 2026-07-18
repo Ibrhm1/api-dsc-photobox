@@ -6,39 +6,6 @@ const tags = ['Photos'];
 
 export const photosPath = {
   '/photos/{sessionId}': {
-    get: {
-      tags,
-      summary: 'Mengambil semua foto berdasarkan session id',
-      parameters: [
-        {
-          name: 'sessionId',
-          in: 'path',
-          required: true,
-          description: 'ID of the photo session to retrieve photos for',
-          schema: {
-            type: 'string',
-            example: 'PXS-H-DE_CUPYS',
-          },
-        },
-      ],
-      responses: {
-        200: responseSuccess({
-          description: 'Berhasil mengambil semua foto berdasarkan session id',
-          exampleMessage: 'Foto berhasil diambil',
-          data: {
-            type: 'array',
-            items: {
-              $ref: '#/components/schemas/Photo',
-            },
-          },
-        }),
-        404: responseError({
-          description: 'Photos not found',
-          exampleMessage:
-            'Tidak ada foto yang ditemukan dengan session ID yang diberikan',
-        }),
-      },
-    },
     post: {
       tags,
       summary: 'Mengupload foto berdasarkan session id',
@@ -71,6 +38,39 @@ export const photosPath = {
           description: 'Bad request / File validation error',
           exampleMessage: 'Validasi file gagal',
           statusCode: 400,
+        }),
+      },
+    },
+    get: {
+      tags,
+      summary: 'Mengambil semua foto berdasarkan session id',
+      parameters: [
+        {
+          name: 'sessionId',
+          in: 'path',
+          required: true,
+          description: 'ID of the photo session to retrieve photos for',
+          schema: {
+            type: 'string',
+            example: 'PXS-H-DE_CUPYS',
+          },
+        },
+      ],
+      responses: {
+        200: responseSuccess({
+          description: 'Berhasil mengambil semua foto berdasarkan session id',
+          exampleMessage: 'Foto berhasil diambil',
+          data: {
+            type: 'array',
+            items: {
+              $ref: '#/components/schemas/Photo',
+            },
+          },
+        }),
+        404: responseError({
+          description: 'Photos not found',
+          exampleMessage:
+            'Tidak ada foto yang ditemukan dengan session ID yang diberikan',
         }),
       },
     },

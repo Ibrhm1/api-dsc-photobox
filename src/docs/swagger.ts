@@ -1,9 +1,11 @@
 import swaggerJsdoc from 'swagger-jsdoc';
 import { env } from '../utils/env.ts';
+import { adminPath } from './path/admin.path.ts';
 import { cleanUpPath } from './path/cleanUp.path.ts';
 import { customerPath } from './path/customer.path.ts';
 import { photoSessionPath } from './path/photoSession.path.ts';
 import { photosPath } from './path/photos.path.ts';
+import { adminSchema } from './schemas/admin.schema.ts';
 import { customerSchema } from './schemas/customer.schema.ts';
 import { photoSessionSchema } from './schemas/photoSession.schema.ts';
 import { photosSchema } from './schemas/photos.schema.ts';
@@ -23,16 +25,25 @@ const options: swaggerJsdoc.Options = {
       },
     ],
     components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
       schemas: {
         ...photoSessionSchema,
         ...photosSchema,
         ...customerSchema,
+        ...adminSchema,
       },
     },
     paths: {
       ...photoSessionPath,
       ...customerPath,
       ...photosPath,
+      ...adminPath,
       '/clean-up': cleanUpPath,
     },
   },

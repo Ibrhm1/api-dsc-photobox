@@ -16,16 +16,7 @@ const findEmailCustomer = async (email: string) => {
   return customer;
 };
 
-const getAllCustomers = async () => {
-  const customersData = await db
-    .select()
-    .from(customers)
-    .orderBy(desc(customers.createdAt));
-  return customersData;
-};
-
 export const customersRepository = {
   createCustomer,
   findEmailCustomer,
-  getAllCustomers,
 };

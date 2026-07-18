@@ -52,9 +52,42 @@ const logout = async (req: Request, res: Response) => {
   });
 };
 
+const getAllCustomers = async (req: Request, res: Response) => {
+  const admin = req.admin as AdminType;
+  const email = req.query.email as string;
+
+  const { customers, fromCache } = await adminsService.getAllCustomers(
+    admin,
+    email,
+  );
+
+  return responseSchema.success({
+    res,
+    code: 200,
+    data: customers,
+    message: 'Admin berhasil mendapatkan semua customers',
+    fromCache,
+  });
+};
+
+const getAllSessions = async (req: Request, res: Response) => {
+  const { sessions, fromCache } =
+    await adminsService.getAllSessionWithPhotosWithCustomer();
+
+  return responseSchema.success({
+    res,
+    code: 200,
+    data: sessions,
+    message: 'Admin berhasil mendapatkan semua session',
+    fromCache,
+  });
+};
+
 export const adminsController = {
   register,
   login,
   me,
   logout,
+  getAllCustomers,
+  getAllSessions,
 };

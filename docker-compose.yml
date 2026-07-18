@@ -1,0 +1,62 @@
+services:
+  # -------------------------------------------------------------
+  # Backend Express Application (Bun)
+  # -------------------------------------------------------------
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dsc-photobox-backend
+    restart: unless-stopped
+    ports:
+      - '${PORT:-3000}:3000'
+    environment:
+      PORT: 3000
+      # WAJIB di-set ke 0.0.0.0 agar port container dapat di-expose ke luar container
+      HOST: 0.0.0.0
+      NODE_ENV: ${NODE_ENV:-production}
+      BASE_URL: ${BASE_URL:-http://localhost:3000}
+      ORIGIN_ALLOWED: ${ORIGIN_ALLOWED:-http://localhost:5173}
+      DATABASE_URL: ${DATABASE_URL}
+      SUPABASE_URL: ${SUPABASE_URL}
+      SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY}
+      SUPABASE_JWT_SECRET: ${SUPABASE_JWT_SECRET}
+      # Menggunakan Redis kontainer lokal di docker-compose
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      - redis
+
+  # -------------------------------------------------------------
+  # Redis Cache Service (Lokal - Opsional)
+  # Jika ingin menggunakan Redis lokal di dalam Docker, silakan uncomment service ini
+  # beserta bagian `depends_on` di service `app` di atas.
+  # -------------------------------------------------------------
+  redis:
+    image: mirror.gcr.io/library/redis:7-alpine
+    container_name: dsc-photobox-redis
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+
+  # -------------------------------------------------------------
+  # PostgreSQL Database (Lokal - Opsional)
+  # Jika ingin menggunakan database lokal, silakan uncomment service ini
+  # -------------------------------------------------------------
+  # db:
+  #   image: mirror.gcr.io/library/postgres:15-alpine
+  #   container_name: dsc-photobox-db
+  #   restart: unless-stopped
+  #   ports:
+  #     - "5432:5432"
+  #   environment:
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: HTpdrRgyZeXZN0lv
+  #     POSTGRES_DB: dsc_photobox
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  redis_data:
+  # postgres_data:

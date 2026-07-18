@@ -5,27 +5,6 @@ const tags = ['Photo Session'];
 
 export const photoSessionPath = {
   '/photo-session': {
-    get: {
-      tags,
-      summary:
-        'Mendapatkan semua data session photo dengan relasi customer dan photo ',
-      responses: {
-        200: responseSuccess({
-          description: 'Data Session Photo berhasil diambil',
-          exampleMessage: 'Data Session Photo berhasil diambil',
-          data: {
-            type: 'array',
-            items: {
-              $ref: '#/components/schemas/PhotoSessionWithDetails',
-            },
-          },
-        }),
-        404: responseError({
-          description: 'Data Session Photo kosong',
-          exampleMessage: 'Data Session Photo tidak ditemukan',
-        }),
-      },
-    },
     post: {
       tags: ['Photo Session'],
       summary: 'Create a new photo session',
@@ -45,6 +24,27 @@ export const photoSessionPath = {
             field: 'name',
             message: 'Nama tidak boleh kosong',
           },
+        }),
+      },
+    },
+    get: {
+      tags,
+      summary:
+        'Mendapatkan semua data session photo dengan relasi customer dan photo ',
+      responses: {
+        200: responseSuccess({
+          description: 'Data Session Photo berhasil diambil',
+          exampleMessage: 'Data Session Photo berhasil diambil',
+          data: {
+            type: 'array',
+            items: {
+              $ref: '#/components/schemas/PhotoSessionWithDetails',
+            },
+          },
+        }),
+        404: responseError({
+          description: 'Data Session Photo kosong',
+          exampleMessage: 'Data Session Photo tidak ditemukan',
         }),
       },
     },

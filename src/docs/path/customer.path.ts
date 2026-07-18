@@ -5,29 +5,6 @@ import { responseSuccess } from '../response/success.response.ts';
 const tags = ['Customers'];
 
 export const customerPath = {
-  '/customers': {
-    get: {
-      tags,
-      summary: 'Mengambil semua data customers',
-      responses: {
-        200: responseSuccess({
-          data: {
-            type: 'array',
-            items: {
-              $ref: '#/components/schemas/Customer',
-            },
-          },
-          description: 'Mengambil semua data dari customers',
-          exampleMessage: 'Berhasil mengambil semua data customers',
-        }),
-        404: responseError({
-          description: 'Data customers kosong',
-          exampleMessage: 'Data customer tidak ditemukan',
-          statusCode: 404,
-        }),
-      },
-    },
-  },
   '/customers/{sessionId}': {
     post: {
       tags,
@@ -63,6 +40,29 @@ export const customerPath = {
             field: 'name',
             message: 'Nama tidak boleh kosong',
           },
+        }),
+      },
+    },
+  },
+  '/customers': {
+    get: {
+      tags,
+      summary: 'Mengambil semua data customers',
+      responses: {
+        200: responseSuccess({
+          data: {
+            type: 'array',
+            items: {
+              $ref: '#/components/schemas/Customer',
+            },
+          },
+          description: 'Mengambil semua data dari customers',
+          exampleMessage: 'Berhasil mengambil semua data customers',
+        }),
+        404: responseError({
+          description: 'Data customers kosong',
+          exampleMessage: 'Data customer tidak ditemukan',
+          statusCode: 404,
         }),
       },
     },

@@ -3,6 +3,6 @@ export type CacheKeyType = {
 };
 
 export type SetCacheType = CacheKeyType & {
-  data?: Record<string, unknown>;
+  data: Record<string, any>;
   ttl?: number;
 };
