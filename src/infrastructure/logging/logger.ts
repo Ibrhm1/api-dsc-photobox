@@ -1,8 +1,16 @@
+import fs from 'fs';
+import path from 'path';
 import pino from 'pino';
 import { env } from '../../utils/env';
 import { contextStorage } from './context';
 
 const isDev = env.NODE_ENV === 'development';
+
+// Buat folder logs secara aman agar tidak crash pada runtime Bun
+const logsDir = path.resolve(process.cwd(), 'logs');
+if (!fs.existsSync(logsDir)) {
+  fs.mkdirSync(logsDir, { recursive: true });
+}
 
 export const logger = pino({
   level: isDev ? 'debug' : 'info',
@@ -56,7 +64,7 @@ export const logger = pino({
         target: 'pino/file',
         options: {
           destination: './logs/app.log',
-          mkdir: true,
+          mkdir: false, // Di-set ke false karena folder logs sudah dibuat di atas secara aman
         },
         level: 'info',
       },

@@ -1,7 +1,6 @@
 import swaggerJsdoc from 'swagger-jsdoc';
 import { env } from '../utils/env.ts';
 import { adminPath } from './path/admin.path.ts';
-import { cleanUpPath } from './path/cleanUp.path.ts';
 import { customerPath } from './path/customer.path.ts';
 import { photoSessionPath } from './path/photoSession.path.ts';
 import { photosPath } from './path/photos.path.ts';
@@ -44,7 +43,6 @@ const options: swaggerJsdoc.Options = {
       ...customerPath,
       ...photosPath,
       ...adminPath,
-      '/clean-up': cleanUpPath,
     },
   },
   apis: [],

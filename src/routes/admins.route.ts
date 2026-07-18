@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { adminsController } from '../controllers/admins.controller';
 import { authMiddleware } from '../middlewares/auth.middleware';
-import { rateLimitMiddleware } from '../middlewares/rateLimit.middleware';
+import { adminAuthRateLimiter } from '../middlewares/rateLimit.middleware';
 import { validateBody } from '../middlewares/validation.middleware';
 import { adminsValidation } from '../validations/admins.validation';
 
@@ -9,13 +9,13 @@ const adminsRoute = Router();
 
 adminsRoute.post(
   '/register',
-  rateLimitMiddleware,
+  adminAuthRateLimiter,
   validateBody(adminsValidation.registerAdminValidation),
   adminsController.register,
 );
 adminsRoute.post(
   '/login',
-  rateLimitMiddleware,
+  adminAuthRateLimiter,
   validateBody(adminsValidation.loginAdminValidation),
   adminsController.login,
 );

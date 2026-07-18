@@ -1,12 +1,12 @@
 import { responseError } from '../response/error.response.ts';
 import { responseSuccess } from '../response/success.response.ts';
 
-const tags = ['Photo Session'];
+const tags = ['Photo Sessions'];
 
 export const photoSessionPath = {
-  '/photo-session': {
+  '/photo-sessions': {
     post: {
-      tags: ['Photo Session'],
+      tags: ['Photo Sessions'],
       summary: 'Create a new photo session',
       responses: {
         201: responseSuccess({
@@ -24,27 +24,6 @@ export const photoSessionPath = {
             field: 'name',
             message: 'Nama tidak boleh kosong',
           },
-        }),
-      },
-    },
-    get: {
-      tags,
-      summary:
-        'Mendapatkan semua data session photo dengan relasi customer dan photo ',
-      responses: {
-        200: responseSuccess({
-          description: 'Data Session Photo berhasil diambil',
-          exampleMessage: 'Data Session Photo berhasil diambil',
-          data: {
-            type: 'array',
-            items: {
-              $ref: '#/components/schemas/PhotoSessionWithDetails',
-            },
-          },
-        }),
-        404: responseError({
-          description: 'Data Session Photo kosong',
-          exampleMessage: 'Data Session Photo tidak ditemukan',
         }),
       },
     },

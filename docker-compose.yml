@@ -1,7 +1,4 @@
 services:
-  # -------------------------------------------------------------
-  # Backend Express Application (Bun)
-  # -------------------------------------------------------------
   app:
     build:
       context: .
@@ -12,7 +9,6 @@ services:
       - '${PORT:-3000}:3000'
     environment:
       PORT: 3000
-      # WAJIB di-set ke 0.0.0.0 agar port container dapat di-expose ke luar container
       HOST: 0.0.0.0
       NODE_ENV: ${NODE_ENV:-production}
       BASE_URL: ${BASE_URL:-http://localhost:3000}
@@ -21,16 +17,10 @@ services:
       SUPABASE_URL: ${SUPABASE_URL}
       SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY}
       SUPABASE_JWT_SECRET: ${SUPABASE_JWT_SECRET}
-      # Menggunakan Redis kontainer lokal di docker-compose
       REDIS_URL: redis://redis:6379
     depends_on:
       - redis
 
-  # -------------------------------------------------------------
-  # Redis Cache Service (Lokal - Opsional)
-  # Jika ingin menggunakan Redis lokal di dalam Docker, silakan uncomment service ini
-  # beserta bagian `depends_on` di service `app` di atas.
-  # -------------------------------------------------------------
   redis:
     image: mirror.gcr.io/library/redis:7-alpine
     container_name: dsc-photobox-redis

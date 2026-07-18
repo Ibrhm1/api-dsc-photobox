@@ -5,6 +5,7 @@ import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './docs/swagger';
 import { errorMiddleware } from './middlewares/error.middleware';
 import { notFoundMiddleware } from './middlewares/notFound.middleware';
+import { globalRateLimiter } from './middlewares/rateLimit.middleware';
 import { requestIdMiddleware } from './middlewares/requestId.middleware';
 import healthRoute from './routes/health.route';
 import router from './routes/route';
@@ -20,7 +21,7 @@ app.use(requestIdMiddleware);
 
 // Endpoint
 app.use('/', healthRoute);
-app.use('/api', router);
+app.use('/api', globalRateLimiter, router);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Error and 404 Handling
