@@ -15,7 +15,7 @@ const app = express();
 
 // Middleware
 app.use(helmet());
-app.use(cors({ origin: env.ORIGIN_ALLOWED }));
+app.use(cors({ origin: env.ORIGIN_ALLOWED, credentials: true }));
 app.use(express.json());
 app.use(requestIdMiddleware);
 

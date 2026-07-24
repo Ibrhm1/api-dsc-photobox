@@ -4,7 +4,7 @@ export const requestBodyCustomer = {
     'application/json': {
       schema: {
         type: 'object',
-        required: ['name', 'email', 'instagramUsername'],
+        required: ['name', 'email', 'npm', 'major', 'instagramUsername'],
         properties: {
           name: {
             type: 'string',
@@ -13,6 +13,16 @@ export const requestBodyCustomer = {
           email: {
             type: 'string',
             example: 'johndoe@example.com',
+          },
+          npm: {
+            type: 'string',
+            example: '1202203040',
+            description: 'Nomor Pokok Mahasiswa (Maksimal 15 karakter)',
+          },
+          major: {
+            type: 'string',
+            example: 'Teknik Informatika',
+            description: 'Jurusan / Program Studi',
           },
           phoneNumber: {
             type: 'string',

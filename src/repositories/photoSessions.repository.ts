@@ -1,6 +1,6 @@
-import { eq } from 'drizzle-orm';
+import { eq, desc } from 'drizzle-orm';
 import { db } from '../infrastructure/database/drizzle';
-import { photoSessions } from '../infrastructure/database/schemas';
+import { photoSessions, photos, customers } from '../infrastructure/database/schemas';
 import type {
   InsertPhotoSessionsType,
   UpdateZipUrlPhotoSessionsType,
@@ -41,8 +41,33 @@ const updateZipUrlPhotoSession = async (
   return result;
 };
 
+const getGallerySessions = async () => {
+  const data = await db
+    .select({
+      customer: {
+        name: customers.name,
+      },
+      photo: {
+        id: photos.id,
+        fileName: photos.fileName,
+        fileUrl: photos.fileUrl,
+      },
+      photoSession: {
+        id: photoSessions.id,
+        createdAt: photoSessions.createdAt,
+      },
+    })
+    .from(photoSessions)
+    .leftJoin(photos, eq(photoSessions.id, photos.sessionId))
+    .leftJoin(customers, eq(customers.sessionId, photoSessions.id))
+    .groupBy(photoSessions.id, customers.id, photos.id)
+    .orderBy(desc(photoSessions.createdAt));
+  return data;
+};
+
 export const photoSessionsRepository = {
   createPhotoSession,
   findPhotoSessionById,
   updateZipUrlPhotoSession,
+  getGallerySessions,
 };

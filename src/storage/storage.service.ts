@@ -31,7 +31,7 @@ const uploadFiles = ({ files, sessionId }: UploadFileParamsType) => {
     files.map(async (file, fileIdx) => {
       const fileName = formateNameFile(file.originalname, fileIdx, sessionId);
       const filePath = `${sessionId}/original/${fileName}`;
-      const fileBody = new Uint8Array(file.buffer).buffer;
+      const fileBody = file.buffer;
 
       const { error } = await supabase.storage
         .from(storageConfig.bucketName)

@@ -89,6 +89,9 @@ const uploadPhotos = async (data: CreatePhotosType) => {
       return { dataPhotos: photos, dataPhotosession: photosession };
     });
 
+    await cacheService.del({ key: cacheKey.session() });
+    await cacheService.del({ key: 'public:gallery' });
+
     return {
       zipUrl: photos.dataPhotosession?.zipUrl,
       photos: photos.dataPhotos,
@@ -108,10 +111,13 @@ const uploadPhotos = async (data: CreatePhotosType) => {
 };
 
 const getAllPhotosBySessionId = async (sessionId: string) => {
-  logger.info({
-    service,
-    sessionId,
-  });
+  logger.info(
+    {
+      service,
+      sessionId,
+    },
+    'Proses mengambil data photos',
+  );
 
   const existingPhotoSession =
     await photoSessionsRepository.findPhotoSessionById(sessionId);

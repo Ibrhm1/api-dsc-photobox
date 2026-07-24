@@ -20,6 +20,14 @@ export const customerSchema = {
         format: 'email',
         example: 'johndoe@example.com',
       },
+      npm: {
+        type: 'string',
+        example: '1202203040',
+      },
+      major: {
+        type: 'string',
+        example: 'Teknik Informatika',
+      },
       phoneNumber: {
         type: 'string',
         nullable: true,
@@ -52,6 +60,14 @@ export const customerSchema = {
         type: 'string',
         format: 'email',
         example: 'johndoe@example.com',
+      },
+      npm: {
+        type: 'string',
+        example: '1202203040',
+      },
+      major: {
+        type: 'string',
+        example: 'Teknik Informatika',
       },
       phoneNumber: {
         type: 'string',
