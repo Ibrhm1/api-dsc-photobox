@@ -6,7 +6,15 @@ import { contextStorage } from './context';
 
 const isDev = env.NODE_ENV === 'development';
 
-// Buat folder logs secara aman agar tidak crash pada runtime Bun
+let hasPinoPretty = false;
+try {
+  require.resolve('pino-pretty');
+  hasPinoPretty = true;
+} catch {
+  hasPinoPretty = false;
+}
+const usePretty = isDev && hasPinoPretty;
+
 const logsDir = path.resolve(process.cwd(), 'logs');
 if (!fs.existsSync(logsDir)) {
   fs.mkdirSync(logsDir, { recursive: true });
@@ -49,8 +57,8 @@ export const logger = pino({
   transport: {
     targets: [
       {
-        target: isDev ? 'pino-pretty' : 'pino/file',
-        options: isDev
+        target: usePretty ? 'pino-pretty' : 'pino/file',
+        options: usePretty
           ? {
               colorize: true,
               translateTime: 'HH:MM:ss',
