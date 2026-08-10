@@ -1,23 +1,20 @@
 import type { Request, Response } from 'express';
 import { customersService } from '../services/customers.service';
-import type { InsertCustomersType } from '../types/customers.type';
 import { responseSchema } from '../utils/responseServer';
 
 const create = async (req: Request, res: Response) => {
   const { name, email, instagramUsername, phoneNumber, npm, major } = req.body;
-  const { sessionId } = req.params as { sessionId: string };
+  const { sessionId } = req.params;
 
-  const payload: InsertCustomersType = {
+  const customer = await customersService.createCustomerBySessionId({
     name,
-    sessionId,
+    sessionId: sessionId as string,
     email,
     instagramUsername,
     phoneNumber,
     npm,
     major,
-  };
-
-  const customer = await customersService.createCustomerBySessionId(payload);
+  });
 
   return responseSchema.success({
     res,

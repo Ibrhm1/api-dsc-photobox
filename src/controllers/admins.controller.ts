@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 import { adminsService } from '../services/admins.service';
 import { responseSchema } from '../utils/responseServer';
-import type { AdminType } from '../types/admins.type';
+import type { AdminType } from '../types/admins';
 
 const register = async (req: Request, res: Response) => {
   const admin = await adminsService.registerAdmin(req.body);
@@ -26,9 +26,12 @@ const login = async (req: Request, res: Response) => {
 };
 
 const me = async (req: Request, res: Response) => {
-  const id = req.admin?.id;
+  if (!req.admin) {
+  }
 
-  const { admin, fromCache } = await adminsService.getAdminLogin(id as string);
+  const id = req.admin?.id as string;
+
+  const { admin, fromCache } = await adminsService.getAdminLogin(id);
 
   return responseSchema.success({
     res,

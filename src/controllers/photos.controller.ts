@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 import { photosService } from '../services/photos.service';
-import type { CreatePhotosType } from '../types/photos.type';
+import type { CreatePhotosType } from '../types/photos';
 import { responseSchema } from '../utils/responseServer';
 
 const create = async (req: Request, res: Response) => {

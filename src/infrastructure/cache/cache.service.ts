@@ -1,4 +1,4 @@
-import type { CacheKeyType, SetCacheType } from '../../types/cahce.type';
+import type { CacheKeyType, SetCacheType } from '../../types/cache';
 import { logger } from '../logging/logger';
 import { redis } from './ioredis.client';
 

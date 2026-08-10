@@ -7,7 +7,7 @@ import type {
   AdminType,
   LoginAdminType,
   RegisterAdminType,
-} from '../types/admins.type';
+} from '../types/admins';
 
 const service = '[Admins Service]';
 

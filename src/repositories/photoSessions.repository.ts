@@ -4,8 +4,8 @@ import { photoSessions, photos, customers } from '../infrastructure/database/sch
 import type {
   InsertPhotoSessionsType,
   UpdateZipUrlPhotoSessionsType,
-} from '../types/photoSessions.type';
-import type { Transaction } from '../types/global.type';
+} from '../types/photoSessions';
+import type { Transaction } from '../types/global';
 
 const createPhotoSession = async (
   dataPhotoSession: InsertPhotoSessionsType,

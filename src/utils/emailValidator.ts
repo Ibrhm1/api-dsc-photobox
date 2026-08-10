@@ -18,8 +18,16 @@ export const isRealEmail = async (email: string): Promise<boolean> => {
   }
 
   try {
-    const mxRecords = await resolver.resolveMx(domain);
-    return mxRecords && mxRecords.length > 0;
+    const timeoutPromise = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error('DNS Timeout')), 3500),
+    );
+    const mxPromise = resolver.resolveMx(domain);
+    const mxRecords = (await Promise.race([
+      mxPromise,
+      timeoutPromise,
+    ])) as Array<{ exchange: string; priority: number }>;
+
+    return Array.isArray(mxRecords) && mxRecords.length > 0;
   } catch {
     return false;
   }

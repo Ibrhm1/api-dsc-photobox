@@ -4,7 +4,7 @@ import { photosRepository } from '../repositories/photos.repository';
 import { photoSessionsRepository } from '../repositories/photoSessions.repository';
 import storageService from '../storage/storage.service';
 import { createZipSession } from '../storage/zip.service';
-import type { CreatePhotosType } from '../types/photos.type';
+import type { CreatePhotosType } from '../types/photos';
 import { handleTransaction } from '../utils/handleTransaction';
 import { cacheKey, cacheService } from '../infrastructure/cache/cache.service';
 

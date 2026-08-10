@@ -1,5 +1,5 @@
 import { db } from '../infrastructure/database/drizzle';
-import type { Transaction } from '../types/global.type';
+import type { Transaction } from '../types/global';
 
 type callbackTransactionType<T> = (tx: Transaction) => Promise<T>;
 

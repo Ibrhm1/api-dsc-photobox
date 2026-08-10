@@ -1,9 +1,8 @@
 import { AppError } from '../errors/appError';
-import { cacheKey, cacheService } from '../infrastructure/cache/cache.service';
 import { logger } from '../infrastructure/logging/logger';
 import { customersRepository } from '../repositories/customers.repository';
 import { photoSessionsRepository } from '../repositories/photoSessions.repository';
-import type { InsertCustomersType } from '../types/customers.type';
+import type { InsertCustomersType } from '../types/customers';
 
 const serviceName = '[Customers Service]';
 

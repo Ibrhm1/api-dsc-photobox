@@ -10,7 +10,7 @@ console.log(`Menemukan ${entrypoints.length} file untuk dibuild...`);
 
 // Jalankan proses build
 const result = await build({
-  entrypoints: entrypoints,
+  entrypoints,
   outdir: './dist',
   target: 'bun',
   minify: true, // Ubah jadi false kalau kode tidak mau dikompres

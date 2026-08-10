@@ -7,7 +7,7 @@ import {
   photoSessions,
 } from '../infrastructure/database/schemas';
 import { supabase } from '../infrastructure/database/supabase';
-import type { InsertAdminType, LoginAdminType } from '../types/admins.type';
+import type { InsertAdminType, LoginAdminType } from '../types/admins';
 
 const createAdmin = async (data: InsertAdminType) => {
   const { data: admin, error } = await supabase.auth.signUp({

@@ -5,8 +5,8 @@ import {
   photos,
   photoSessions,
 } from '../infrastructure/database/schemas';
-import type { Transaction } from '../types/global.type';
-import type { PhotosType } from '../types/photos.type';
+import type { Transaction } from '../types/global';
+import type { PhotosType } from '../types/photos';
 
 const createPhotos = async (data: PhotosType, tx?: Transaction) => {
   const query = tx || db;

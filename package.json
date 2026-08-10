@@ -48,5 +48,11 @@
     "swagger-jsdoc": "^6.3.0",
     "swagger-ui-express": "^5.0.1",
     "zod": "^4.4.3"
-  }
+  },
+  "author": {
+    "email": "iibibrahim2201@gmail.com",
+    "name": "Iib Ibrahim",
+    "url": "https://github.com/Ibrhm1"
+  },
+  "packageManager": "bun@1.3.14"
 }
