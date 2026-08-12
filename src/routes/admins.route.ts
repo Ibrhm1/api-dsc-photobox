@@ -20,8 +20,9 @@ adminsRoute.post(
   adminsController.login,
 );
 adminsRoute.get('/me', authMiddleware, adminsController.me);
-adminsRoute.delete('/logout', authMiddleware, adminsController.logout);
 adminsRoute.get('/customers', authMiddleware, adminsController.getAllCustomers);
 adminsRoute.get('/sessions', authMiddleware, adminsController.getAllSessions);
+adminsRoute.delete('/logout', authMiddleware, adminsController.logout);
+adminsRoute.delete('/clear', authMiddleware, adminsController.resetDatabase);
 
 export { adminsRoute };

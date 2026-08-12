@@ -8,6 +8,8 @@ import type {
   LoginAdminType,
   RegisterAdminType,
 } from '../types/admins';
+import { env } from '../utils/env';
+import storageService from '../storage/storage.service';
 
 const service = '[Admins Service]';
 
@@ -212,6 +214,33 @@ const getAllSessionWithPhotosWithCustomer = async () => {
   return { sessions: groupedSessions, fromCache: false };
 };
 
+const resetDatabaseAndStorage = async (admin: AdminType, pin: string) => {
+  logger.info({ service, admin }, 'Proses reset database dan storage');
+
+  const isPinMatch = pin === env.PIN;
+  if (!isPinMatch) {
+    throw new AppError(400, 'PIN tidak cocok');
+  }
+
+  const allSession = await adminsRepository.getAllSession();
+
+  await Promise.all(
+    allSession.map(async (session) => {
+      await storageService.deleteSessionFiles(session.photoSession.id);
+    }),
+  );
+
+  const resetDatabaseResult = await adminsRepository.resetDatabase();
+
+  await cacheService.flush();
+
+  logger.info({ service, admin }, 'Berhasil reset database dan storage');
+
+  return {
+    database: resetDatabaseResult,
+  };
+};
+
 export const adminsService = {
   registerAdmin,
   loginAdmin,
@@ -219,4 +248,5 @@ export const adminsService = {
   logoutAdmin,
   getAllCustomers,
   getAllSessionWithPhotosWithCustomer,
+  resetDatabaseAndStorage,
 };

@@ -120,6 +120,15 @@ const getAllSession = async () => {
   return data;
 };
 
+const resetDatabase = async () => {
+  const result = await Promise.allSettled([
+    db.delete(customers),
+    db.delete(photoSessions),
+    db.delete(photos),
+  ]);
+  return result;
+};
+
 export const adminsRepository = {
   createAdmin,
   adminLogin,
@@ -127,4 +136,5 @@ export const adminsRepository = {
   adminLogOut,
   getAllCustomers,
   getAllSession,
+  resetDatabase,
 };

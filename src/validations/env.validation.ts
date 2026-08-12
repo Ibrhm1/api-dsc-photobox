@@ -18,4 +18,5 @@ export const envSchema = z.object({
   MAIL_USERNAME: z.string('MAIL_USERNAME harus berupa string'),
   MAIL_PASSWORD: z.string('MAIL_PASSWORD harus berupa string'),
   MAIL_SERVICE: z.string('MAIL_SERVICE harus berupa string'),
+  PIN: z.coerce.string().length(4, 'PIN harus berupa 4 digit').optional(),
 });

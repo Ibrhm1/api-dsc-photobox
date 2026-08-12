@@ -86,6 +86,20 @@ const getAllSessions = async (req: Request, res: Response) => {
   });
 };
 
+const resetDatabase = async (req: Request, res: Response) => {
+  const admin = req.admin as AdminType;
+  const pin = req.body.pin;
+
+  const result = await adminsService.resetDatabaseAndStorage(admin, pin);
+
+  return responseSchema.success({
+    res,
+    code: 200,
+    data: result,
+    message: 'Admin berhasil mereset database dan storage',
+  });
+};
+
 export const adminsController = {
   register,
   login,
@@ -93,4 +107,5 @@ export const adminsController = {
   logout,
   getAllCustomers,
   getAllSessions,
+  resetDatabase,
 };

@@ -41,10 +41,21 @@ const delCache = async ({ key }: CacheKeyType) => {
   return await redis.del(key);
 };
 
+const flushCache = async () => {
+  logger.info(
+    {
+      service: serviceName,
+    },
+    'FLUSH DATA',
+  );
+  return await redis.flushdb();
+};
+
 export const cacheService = {
   set: setCache,
   get: getCache,
   del: delCache,
+  flush: flushCache,
 };
 
 export const cacheKey = {
