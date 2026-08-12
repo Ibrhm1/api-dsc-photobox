@@ -3,6 +3,7 @@ import { logger } from '../infrastructure/logging/logger';
 import { customersRepository } from '../repositories/customers.repository';
 import { photoSessionsRepository } from '../repositories/photoSessions.repository';
 import type { InsertCustomersType } from '../types/customers';
+import { sendMailToCustomer } from './email.service';
 
 const serviceName = '[Customers Service]';
 
@@ -46,6 +47,13 @@ const createCustomerBySessionId = async (payload: InsertCustomersType) => {
     );
     throw new AppError(400, `Gagal menambahkan data customer`);
   }
+
+  //* Send Email
+  sendMailToCustomer({
+    name: customer.name,
+    email: customer.email,
+    zipUrl: isExistPhotoSession.zipUrl || '',
+  });
 
   return customer;
 };
