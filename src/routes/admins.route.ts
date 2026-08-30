@@ -19,6 +19,8 @@ adminsRoute.post(
   validateBody(adminsValidation.loginAdminValidation),
   adminsController.login,
 );
+adminsRoute.post('/export', authMiddleware, adminsController.exportBucket);
+adminsRoute.get('/export', authMiddleware, adminsController.exportBucket);
 adminsRoute.get('/me', authMiddleware, adminsController.me);
 adminsRoute.get('/customers', authMiddleware, adminsController.getAllCustomers);
 adminsRoute.get('/sessions', authMiddleware, adminsController.getAllSessions);

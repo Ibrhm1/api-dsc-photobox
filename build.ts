@@ -9,6 +9,7 @@ const entrypoints = Array.from(glob.scanSync({ cwd: './src' })).map(
 console.log(`Menemukan ${entrypoints.length} file untuk dibuild...`);
 
 // Jalankan proses build
+console.time('Build time');
 const result = await build({
   entrypoints,
   outdir: './dist',
@@ -18,6 +19,7 @@ const result = await build({
 
 if (result.success) {
   console.log('✅ Build berhasil! Cek folder ./dist');
+  console.timeEnd('Build time');
 } else {
   console.error('❌ Build gagal:', result.logs);
 }

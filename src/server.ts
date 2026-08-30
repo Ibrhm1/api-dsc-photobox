@@ -10,6 +10,7 @@ const server = app.listen(env.PORT, () => {
   );
 });
 
+// Graceful Shutdown
 process.on('SIGTERM', () => {
   logger.info('Menerima signal SIGTERM, memulai graceful shutdown...');
   server.close(() => {

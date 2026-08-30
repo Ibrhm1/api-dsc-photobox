@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from 'express';
-import { logger } from '../infrastructure/logging/logger';
-import { contextStorage } from '../infrastructure/logging/context';
 import { nanoid } from 'nanoid';
+import { contextStorage } from '../infrastructure/logging/context';
+import { logger } from '../infrastructure/logging/logger';
 
 export const requestIdMiddleware = (
   req: Request,

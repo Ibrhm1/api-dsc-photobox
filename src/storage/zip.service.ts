@@ -1,10 +1,46 @@
 import { ZipArchive } from 'archiver';
 import { AppError } from '../errors/appError';
 import { supabase } from '../infrastructure/database/supabase.ts';
-import { storageConfig } from './storage.service';
+import storageService, { storageConfig } from './storage.service';
 import { logger } from '../infrastructure/logging/logger.ts';
 
 const serviceName = '[ZIP Service]';
+
+export const generateZip = async (
+  resolve: (value: Buffer | PromiseLike<Buffer>) => void,
+  reject: (reason?: any) => void,
+) => {
+  const chunks: Buffer[] = [];
+
+  const archive = new ZipArchive({
+    zlib: {
+      level: 9,
+    },
+  });
+  archive.on('data', (chunk) => chunks.push(chunk));
+  archive.on('end', () => resolve(Buffer.concat(chunks)));
+  archive.on('error', (err) => reject(err));
+
+  return archive;
+};
+
+export const generateZipPhotos = async (
+  downloadedFiles: { name: string; buffer: Buffer }[],
+) => {
+  return await new Promise<Buffer>(async (resolve, reject) => {
+    const archive = await generateZip(resolve, reject);
+
+    try {
+      for (const file of downloadedFiles) {
+        archive.append(file.buffer, { name: file.name });
+      }
+
+      archive.finalize();
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
 
 export const createZipSession = async (sessionId: string) => {
   logger.info(
@@ -15,16 +51,16 @@ export const createZipSession = async (sessionId: string) => {
     'Mulai proses pembuatan zip file',
   );
 
-  const { data: files, error } = await supabase.storage
+  const { data: files, error: errorListBucket } = await supabase.storage
     .from(storageConfig.bucketName)
     .list(`${sessionId}/original`);
 
-  if (error) {
+  if (errorListBucket) {
     logger.warn(
       {
         service: serviceName,
         sessionId,
-        error,
+        error: errorListBucket,
       },
       'Gagal mengambil file dari Supabase',
     );
@@ -32,52 +68,12 @@ export const createZipSession = async (sessionId: string) => {
   }
 
   // 1. Download all files in parallel (Optimasi Point 6 - Parallel I/O)
-  const downloadedFiles = await Promise.all(
-    files.map(async (file) => {
-      const path = `${sessionId}/original/${file.name}`;
-      const { data, error } = await supabase.storage
-        .from(storageConfig.bucketName)
-        .download(path);
-
-      if (error) {
-        logger.warn(
-          {
-            service: serviceName,
-            sessionId,
-            fileName: file.name,
-            error,
-          },
-          'Gagal mengambil file dari Supabase',
-        );
-        throw new AppError(500, `Gagal mengambil file dari Supabase`);
-      }
-
-      const buffer = Buffer.from(await data.arrayBuffer());
-      return { name: file.name, buffer };
-    }),
+  const downloadedFiles = await storageService.downloadFilesFromSupabase(
+    sessionId,
+    files,
   );
 
-  // 2. Wrap archive generation in Promise to ensure stream completion (Point 1)
-  const zipBuffer = await new Promise<Buffer>((resolve, reject) => {
-    const archive = new ZipArchive({
-      zlib: {
-        level: 9,
-      },
-    });
-    const chunks: Buffer[] = [];
-    archive.on('data', (chunk) => chunks.push(chunk));
-    archive.on('end', () => resolve(Buffer.concat(chunks)));
-    archive.on('error', (err) => reject(err));
-
-    try {
-      for (const file of downloadedFiles) {
-        archive.append(file.buffer, { name: file.name });
-      }
-      archive.finalize();
-    } catch (err) {
-      reject(err);
-    }
-  });
+  const zipBuffer = await generateZipPhotos(downloadedFiles);
 
   const zipPath = `${sessionId}/archive/${sessionId.toLowerCase()}.zip`;
   const { error: uploadError } = await supabase.storage
@@ -85,6 +81,7 @@ export const createZipSession = async (sessionId: string) => {
     .upload(zipPath, zipBuffer, {
       contentType: 'application/zip',
     });
+
   if (uploadError) {
     logger.warn(
       {
@@ -96,6 +93,7 @@ export const createZipSession = async (sessionId: string) => {
     );
     throw new AppError(500, `Gagal mengupload file zip`);
   }
+
   const { data } = supabase.storage
     .from(storageConfig.bucketName)
     .getPublicUrl(zipPath);

@@ -2,6 +2,7 @@ import { AppError } from '../errors/appError';
 import { supabase } from '../infrastructure/database/supabase';
 import { logger } from '../infrastructure/logging/logger';
 import type { UploadFileParamsType } from '../types/storage';
+import { generateZipPhotos } from './zip.service';
 
 export const storageConfig = {
   bucketName: 'dsc-photobox-storage',
@@ -157,9 +158,129 @@ const deleteSessionFiles = async (sessionId: string) => {
   }
 };
 
+const downloadFilesFromSupabase = async (
+  sessionId: string,
+  files: { name: string }[],
+) => {
+  return await Promise.all(
+    files.map(async (file) => {
+      const path = `${sessionId}/original/${file.name}`;
+      const { data, error: errorDownload } = await supabase.storage
+        .from(storageConfig.bucketName)
+        .download(path);
+
+      if (errorDownload) {
+        logger.warn(
+          {
+            service: serviceName,
+            sessionId,
+            fileName: file.name,
+            error: errorDownload,
+          },
+          'Gagal mengambil file dari Supabase',
+        );
+        throw new AppError(500, `Gagal mengambil file dari Supabase`);
+      }
+
+      const buffer = Buffer.from(await data.arrayBuffer());
+
+      return { name: file.name, buffer };
+    }),
+  );
+};
+
+const exportBucketFolders = async (sessionId: string) => {
+  const { data: originalFiles } = await supabase.storage
+    .from(storageConfig.bucketName)
+    .list(`${sessionId}/original`);
+
+  return { originalFiles };
+};
+
+const downloadAllFilesFromBucket = async () => {
+  const filePaths: string[] = [];
+
+  const scanFolder = async (prefix: string = '') => {
+    const { data, error } = await supabase.storage
+      .from(storageConfig.bucketName)
+      .list(prefix, { limit: 1000 });
+
+    if (error || !data) return;
+
+    for (const item of data) {
+      if (item.name === '.emptyFolderPlaceholder') continue;
+
+      const itemPath = prefix ? `${prefix}/${item.name}` : item.name;
+
+      if (!item.id || item.metadata === null) {
+        await scanFolder(itemPath);
+      } else {
+        filePaths.push(itemPath);
+      }
+    }
+  };
+
+  await scanFolder('');
+
+  if (filePaths.length === 0) {
+    throw new AppError(404, 'Tidak ada file di dalam bucket untuk diekspor');
+  }
+
+  const downloadedFiles = await Promise.all(
+    filePaths.map(async (path) => {
+      const { data, error } = await supabase.storage
+        .from(storageConfig.bucketName)
+        .download(path);
+
+      if (error || !data) {
+        logger.warn({ service: serviceName, path, error }, 'Gagal mengunduh file dari bucket');
+        return null;
+      }
+
+      const buffer = Buffer.from(await data.arrayBuffer());
+      return { name: path, buffer };
+    }),
+  );
+
+  const validFiles = downloadedFiles.filter(
+    (f): f is { name: string; buffer: Buffer } => f !== null,
+  );
+
+  if (validFiles.length === 0) {
+    throw new AppError(404, 'Gagal mengunduh file dari bucket');
+  }
+
+  return { validFiles, filePaths };
+};
+
+const deleteBucketFiles = async (filePaths: string[]) => {
+  if (!filePaths || filePaths.length === 0) return;
+
+  const { error } = await supabase.storage
+    .from(storageConfig.bucketName)
+    .remove(filePaths);
+
+  if (error) {
+    logger.error(
+      { service: serviceName, error },
+      'Gagal menghapus file dari bucket',
+    );
+    throw new AppError(500, `Gagal menghapus file dari bucket: ${error.message}`);
+  }
+
+  logger.info(
+    { service: serviceName, count: filePaths.length },
+    'Berhasil menghapus file dari bucket',
+  );
+};
+
 export default {
   storageConfig,
   uploadFiles,
   deleteFolderFromSupabase,
   deleteSessionFiles,
+  downloadFilesFromSupabase,
+  exportBucketFolders,
+  downloadAllFilesFromBucket,
+  deleteBucketFiles,
 };

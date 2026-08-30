@@ -1,17 +1,26 @@
+import { generateZipPhotos } from '../storage/zip.service';
 import crypto from 'crypto';
 import { AppError } from '../errors/appError';
 import { cacheKey, cacheService } from '../infrastructure/cache/cache.service';
 import { logger } from '../infrastructure/logging/logger';
 import { adminsRepository } from '../repositories/admins.repository';
+import storageService from '../storage/storage.service';
 import type {
   AdminType,
   LoginAdminType,
   RegisterAdminType,
 } from '../types/admins';
 import { env } from '../utils/env';
-import storageService from '../storage/storage.service';
 
 const service = '[Admins Service]';
+
+const requirePin = (pin: string, email: string) => {
+  const isPinMatch = pin === env.PIN;
+  if (!isPinMatch) {
+    logger.warn({ service, email }, 'PIN tidak cocok');
+    throw new AppError(400, 'PIN tidak cocok');
+  }
+};
 
 const registerAdmin = async (data: RegisterAdminType) => {
   logger.info({ service, email: data.email }, 'Proses register admin');
@@ -217,10 +226,7 @@ const getAllSessionWithPhotosWithCustomer = async () => {
 const resetDatabaseAndStorage = async (admin: AdminType, pin: string) => {
   logger.info({ service, admin }, 'Proses reset database dan storage');
 
-  const isPinMatch = pin === env.PIN;
-  if (!isPinMatch) {
-    throw new AppError(400, 'PIN tidak cocok');
-  }
+  requirePin(pin, admin.email);
 
   const allSession = await adminsRepository.getAllSession();
 
@@ -241,6 +247,35 @@ const resetDatabaseAndStorage = async (admin: AdminType, pin: string) => {
   };
 };
 
+const exportAllFolderInBucket = async (pin: string, admin: AdminType) => {
+  logger.info(
+    { service, admin: admin.email },
+    'Proses export semua folder di bucket',
+  );
+
+  requirePin(pin, admin.email);
+
+  const { validFiles, filePaths } =
+    await storageService.downloadAllFilesFromBucket();
+
+  const zipBuffer = await generateZipPhotos(validFiles);
+
+  await storageService.deleteBucketFiles(filePaths);
+
+  // await adminsRepository.resetDatabase();
+  await cacheService.flush();
+
+  logger.info(
+    { service, admin: admin.email, fileCount: validFiles.length },
+    'Berhasil mengekspor dan menghapus semua data di bucket dan database',
+  );
+
+  return {
+    filename: `export-dsc-photobox-${Date.now()}.zip`,
+    buffer: zipBuffer,
+  };
+};
+
 export const adminsService = {
   registerAdmin,
   loginAdmin,
@@ -249,4 +284,5 @@ export const adminsService = {
   getAllCustomers,
   getAllSessionWithPhotosWithCustomer,
   resetDatabaseAndStorage,
+  exportAllFolderInBucket,
 };

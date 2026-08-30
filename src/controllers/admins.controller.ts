@@ -1,7 +1,8 @@
+import { AppError } from '../errors/appError';
 import type { Request, Response } from 'express';
 import { adminsService } from '../services/admins.service';
-import { responseSchema } from '../utils/responseServer';
 import type { AdminType } from '../types/admins';
+import { responseSchema } from '../utils/responseServer';
 
 const register = async (req: Request, res: Response) => {
   const admin = await adminsService.registerAdmin(req.body);
@@ -100,6 +101,26 @@ const resetDatabase = async (req: Request, res: Response) => {
   });
 };
 
+const exportBucket = async (req: Request, res: Response) => {
+  const admin = req.admin as AdminType;
+  const pin = (req.body?.pin || req.query?.pin) as string;
+
+  if (!pin) {
+    throw new AppError(400, 'PIN wajib diisi');
+  }
+
+  const { filename, buffer } = await adminsService.exportAllFolderInBucket(
+    pin,
+    admin,
+  );
+
+  res.setHeader('Content-Type', 'application/zip');
+  res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+  res.setHeader('Content-Length', buffer.length.toString());
+
+  return res.send(buffer);
+};
+
 export const adminsController = {
   register,
   login,
@@ -108,4 +129,5 @@ export const adminsController = {
   getAllCustomers,
   getAllSessions,
   resetDatabase,
+  exportBucket,
 };

@@ -1,12 +1,12 @@
-import type { NextFunction, Request, Response } from 'express';
-import { eq } from 'drizzle-orm';
 import crypto from 'crypto';
+import { eq } from 'drizzle-orm';
+import type { NextFunction, Request, Response } from 'express';
+import { cacheService } from '../infrastructure/cache/cache.service';
 import { db } from '../infrastructure/database/drizzle';
 import { admins } from '../infrastructure/database/schemas';
-import { logger } from '../infrastructure/logging/logger';
 import { supabase } from '../infrastructure/database/supabase';
+import { logger } from '../infrastructure/logging/logger';
 import { responseSchema } from '../utils/responseServer';
-import { cacheService } from '../infrastructure/cache/cache.service';
 
 const middlewareName = '[Auth Middleware]';
 
@@ -58,7 +58,9 @@ export const authMiddleware = async (
     const cacheKeyToken = `auth:token:${tokenHash}`;
 
     // 1. Cek apakah userId token ini ada di cache Redis
-    const cachedToken = await cacheService.get<{ userId: string }>({ key: cacheKeyToken });
+    const cachedToken = await cacheService.get<{ userId: string }>({
+      key: cacheKeyToken,
+    });
     let userId = cachedToken?.userId;
 
     if (userId) {
@@ -71,7 +73,10 @@ export const authMiddleware = async (
       );
     } else {
       // Cache MISS: Tanya ke Supabase
-      const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+      const {
+        data: { user },
+        error: authError,
+      } = await supabase.auth.getUser(token);
 
       if (authError || !user) {
         logger.warn(
