@@ -197,7 +197,10 @@ const exportBucketFolders = async (sessionId: string) => {
   return { originalFiles };
 };
 
-const downloadAllFilesFromBucket = async () => {
+const downloadAllFilesFromBucket = async (): Promise<{
+  validFiles: { name: string; buffer: Buffer }[];
+  filePaths: string[];
+}> => {
   const filePaths: string[] = [];
 
   const scanFolder = async (prefix: string = '') => {
@@ -226,24 +229,25 @@ const downloadAllFilesFromBucket = async () => {
     throw new AppError(404, 'Tidak ada file di dalam bucket untuk diekspor');
   }
 
-  const downloadedFiles = await Promise.all(
+  const validFiles: { name: string; buffer: Buffer }[] = [];
+
+  await Promise.all(
     filePaths.map(async (path) => {
       const { data, error } = await supabase.storage
         .from(storageConfig.bucketName)
         .download(path);
 
       if (error || !data) {
-        logger.warn({ service: serviceName, path, error }, 'Gagal mengunduh file dari bucket');
-        return null;
+        logger.warn(
+          { service: serviceName, path, error },
+          'Gagal mengunduh file dari bucket',
+        );
+        return;
       }
 
       const buffer = Buffer.from(await data.arrayBuffer());
-      return { name: path, buffer };
+      validFiles.push({ name: path, buffer });
     }),
-  );
-
-  const validFiles = downloadedFiles.filter(
-    (f): f is { name: string; buffer: Buffer } => f !== null,
   );
 
   if (validFiles.length === 0) {
@@ -265,7 +269,10 @@ const deleteBucketFiles = async (filePaths: string[]) => {
       { service: serviceName, error },
       'Gagal menghapus file dari bucket',
     );
-    throw new AppError(500, `Gagal menghapus file dari bucket: ${error.message}`);
+    throw new AppError(
+      500,
+      `Gagal menghapus file dari bucket: ${error.message}`,
+    );
   }
 
   logger.info(
