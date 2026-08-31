@@ -1,5 +1,5 @@
 import z from 'zod';
-import { emailActiveValidation } from './global.validation';
+import { emailActiveValidation } from './global.validation.ts';
 
 const createCustomerValidation = z.object({
   name: z

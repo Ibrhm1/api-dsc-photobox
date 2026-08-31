@@ -1,12 +1,15 @@
-import { AppError } from '../errors/appError';
-import { logger } from '../infrastructure/logging/logger';
-import { photosRepository } from '../repositories/photos.repository';
-import { photoSessionsRepository } from '../repositories/photoSessions.repository';
-import storageService from '../storage/storage.service';
-import { createZipSession } from '../storage/zip.service';
-import type { CreatePhotosType } from '../types/photos';
-import { handleTransaction } from '../utils/handleTransaction';
-import { cacheKey, cacheService } from '../infrastructure/cache/cache.service';
+import { AppError } from '../errors/appError.ts';
+import { logger } from '../infrastructure/logging/logger.ts';
+import { photosRepository } from '../repositories/photos.repository.ts';
+import { photoSessionsRepository } from '../repositories/photoSessions.repository.ts';
+import storageService from '../storage/storage.service.ts';
+import { createZipSession } from '../storage/zip.service.ts';
+import type { CreatePhotosType } from '../types/photos.d.ts';
+import { handleTransaction } from '../utils/handleTransaction.ts';
+import {
+  cacheKey,
+  cacheService,
+} from '../infrastructure/cache/cache.service.ts';
 
 const service = '[Photos Service]';
 

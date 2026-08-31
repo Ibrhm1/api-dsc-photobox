@@ -1,9 +1,9 @@
-import { AppError } from '../errors/appError';
-import { logger } from '../infrastructure/logging/logger';
-import { customersRepository } from '../repositories/customers.repository';
-import { photoSessionsRepository } from '../repositories/photoSessions.repository';
-import type { InsertCustomersType } from '../types/customers';
-import { sendMailToCustomer } from './email.service';
+import { AppError } from '../errors/appError.ts';
+import { logger } from '../infrastructure/logging/logger.ts';
+import { customersRepository } from '../repositories/customers.repository.ts';
+import { photoSessionsRepository } from '../repositories/photoSessions.repository.ts';
+import type { InsertCustomersType } from '../types/customers.d.ts';
+import { sendMailToCustomer } from './email.service.ts';
 
 const serviceName = '[Customers Service]';
 

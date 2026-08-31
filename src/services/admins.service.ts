@@ -1,16 +1,19 @@
-import { generateZipPhotos } from '../storage/zip.service';
+import { generateZipPhotos } from '../storage/zip.service.ts';
 import crypto from 'crypto';
-import { AppError } from '../errors/appError';
-import { cacheKey, cacheService } from '../infrastructure/cache/cache.service';
-import { logger } from '../infrastructure/logging/logger';
-import { adminsRepository } from '../repositories/admins.repository';
-import storageService from '../storage/storage.service';
+import { AppError } from '../errors/appError.ts';
+import {
+  cacheKey,
+  cacheService,
+} from '../infrastructure/cache/cache.service.ts';
+import { logger } from '../infrastructure/logging/logger.ts';
+import { adminsRepository } from '../repositories/admins.repository.ts';
+import storageService from '../storage/storage.service.ts';
 import type {
   AdminType,
   LoginAdminType,
   RegisterAdminType,
-} from '../types/admins';
-import { env } from '../utils/env';
+} from '../types/admins.d.ts';
+import { env } from '../utils/env.ts';
 
 const service = '[Admins Service]';
 
@@ -92,7 +95,7 @@ const getAdminLogin = async (id: string) => {
 
   const admin = await adminsRepository.getAdminLogin(id);
   if (!admin) {
-    logger.warn({ service, ...(admin ?? {}) }, 'Gagal mendapatkan data admin');
+    logger.warn({ service }, 'Gagal mendapatkan data admin');
     throw new AppError(404, 'Gagal mendapatkan data admin');
   }
 

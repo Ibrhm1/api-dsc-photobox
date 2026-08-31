@@ -1,4 +1,4 @@
-import type { photoSessions } from '../infrastructure/database/schemas';
+import type { photoSessions } from '../infrastructure/database/schemas.ts';
 
 export type InsertPhotoSessionsType = typeof photoSessions.$inferInsert;
 

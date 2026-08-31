@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { adminsController } from '../controllers/admins.controller';
-import { authMiddleware } from '../middlewares/auth.middleware';
-import { adminAuthRateLimiter } from '../middlewares/rateLimit.middleware';
-import { validateBody } from '../middlewares/validation.middleware';
-import { adminsValidation } from '../validations/admins.validation';
+import { adminsController } from '../controllers/admins.controller.ts';
+import { authMiddleware } from '../middlewares/auth.middleware.ts';
+import { adminAuthRateLimiter } from '../middlewares/rateLimit.middleware.ts';
+import { validateBody } from '../middlewares/validation.middleware.ts';
+import { adminsValidation } from '../validations/admins.validation.ts';
 
 const adminsRoute = Router();
 

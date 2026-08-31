@@ -1,8 +1,7 @@
-import { AppError } from '../errors/appError';
-import { supabase } from '../infrastructure/database/supabase';
-import { logger } from '../infrastructure/logging/logger';
-import type { UploadFileParamsType } from '../types/storage';
-import { generateZipPhotos } from './zip.service';
+import { AppError } from '../errors/appError.ts';
+import { supabase } from '../infrastructure/database/supabase.ts';
+import { logger } from '../infrastructure/logging/logger.ts';
+import type { UploadFileParamsType } from '../types/storage.ts';
 
 export const storageConfig = {
   bucketName: 'dsc-photobox-storage',

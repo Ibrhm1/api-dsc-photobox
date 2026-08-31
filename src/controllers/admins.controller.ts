@@ -1,8 +1,8 @@
-import { AppError } from '../errors/appError';
+import { AppError } from '../errors/appError.ts';
 import type { Request, Response } from 'express';
-import { adminsService } from '../services/admins.service';
-import type { AdminType } from '../types/admins';
-import { responseSchema } from '../utils/responseServer';
+import { adminsService } from '../services/admins.service.ts';
+import type { AdminType } from '../types/admins.d.ts';
+import { responseSchema } from '../utils/responseServer.ts';
 
 const register = async (req: Request, res: Response) => {
   const admin = await adminsService.registerAdmin(req.body);

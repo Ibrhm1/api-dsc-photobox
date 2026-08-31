@@ -1,13 +1,13 @@
 import { desc, eq, ilike } from 'drizzle-orm';
-import { db } from '../infrastructure/database/drizzle';
+import { db } from '../infrastructure/database/drizzle.ts';
 import {
   admins,
   customers,
   photos,
   photoSessions,
-} from '../infrastructure/database/schemas';
-import { supabase } from '../infrastructure/database/supabase';
-import type { InsertAdminType, LoginAdminType } from '../types/admins';
+} from '../infrastructure/database/schemas.ts';
+import { supabase } from '../infrastructure/database/supabase.ts';
+import type { InsertAdminType, LoginAdminType } from '../types/admins.d.ts';
 
 const createAdmin = async (data: InsertAdminType) => {
   const { data: admin, error } = await supabase.auth.signUp({

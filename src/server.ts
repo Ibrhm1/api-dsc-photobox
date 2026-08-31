@@ -1,6 +1,6 @@
-import app from './app';
-import { logger } from './infrastructure/logging/logger';
-import { env } from './utils/env';
+import app from './app.ts';
+import { logger } from './infrastructure/logging/logger.ts';
+import { env } from './utils/env.ts';
 
 export const server = app.listen(env.PORT, () => {
   const url = `http://${env.HOST}:${env.PORT}`;

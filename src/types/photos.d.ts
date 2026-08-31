@@ -1,4 +1,4 @@
-import { photos } from '../infrastructure/database/schemas';
+import { photos } from '../infrastructure/database/schemas.ts';
 
 export type PhotosType = typeof photos.$inferInsert;
 

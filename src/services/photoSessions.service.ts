@@ -1,8 +1,8 @@
 import { nanoid } from 'nanoid';
-import { photoSessionsRepository } from '../repositories/photoSessions.repository';
-import { logger } from '../infrastructure/logging/logger';
-import { AppError } from '../errors/appError';
-import { cacheService } from '../infrastructure/cache/cache.service';
+import { photoSessionsRepository } from '../repositories/photoSessions.repository.ts';
+import { logger } from '../infrastructure/logging/logger.ts';
+import { AppError } from '../errors/appError.ts';
+import { cacheService } from '../infrastructure/cache/cache.service.ts';
 
 const serviceName = '[Photo Session Service]';
 
@@ -32,7 +32,10 @@ const createNewPhotoSession = async () => {
 };
 
 const getPublicGallerySessions = async () => {
-  logger.info({ service: serviceName }, 'Proses mengambil semua data public gallery');
+  logger.info(
+    { service: serviceName },
+    'Proses mengambil semua data public gallery',
+  );
 
   const cacheKeyGallery = 'public:gallery';
   const cachedGallery = await cacheService.get<any[]>({ key: cacheKeyGallery });
@@ -70,7 +73,9 @@ const getPublicGallerySessions = async () => {
   }, {});
 
   // Convert to array and filter out sessions that don't have photos
-  const groupedSessions = Object.values(groupedData).filter((s: any) => s.photos.length > 0);
+  const groupedSessions = Object.values(groupedData).filter(
+    (s: any) => s.photos.length > 0,
+  );
 
   await cacheService.set({
     key: cacheKeyGallery,

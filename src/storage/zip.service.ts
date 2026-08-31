@@ -1,7 +1,7 @@
 import { ZipArchive } from 'archiver';
-import { AppError } from '../errors/appError';
+import { AppError } from '../errors/appError.ts';
 import { supabase } from '../infrastructure/database/supabase.ts';
-import storageService, { storageConfig } from './storage.service';
+import storageService, { storageConfig } from './storage.service.ts';
 import { logger } from '../infrastructure/logging/logger.ts';
 
 const serviceName = '[ZIP Service]';

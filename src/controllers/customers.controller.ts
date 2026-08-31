@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
-import { customersService } from '../services/customers.service';
-import { responseSchema } from '../utils/responseServer';
+import { customersService } from '../services/customers.service.ts';
+import { responseSchema } from '../utils/responseServer.ts';
 
 const create = async (req: Request, res: Response) => {
   const { name, email, instagramUsername, phoneNumber, npm, major } = req.body;

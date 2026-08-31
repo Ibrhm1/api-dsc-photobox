@@ -1,6 +1,6 @@
 import { Resolver } from 'dns/promises';
 import disposableDomains from 'disposable-email-domains';
-import { logger } from '../infrastructure/logging/logger';
+import { logger } from '../infrastructure/logging/logger.ts';
 
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const resolver = new Resolver();

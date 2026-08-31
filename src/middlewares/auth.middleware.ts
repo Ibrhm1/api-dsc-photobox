@@ -1,12 +1,12 @@
 import crypto from 'crypto';
 import { eq } from 'drizzle-orm';
 import type { NextFunction, Request, Response } from 'express';
-import { cacheService } from '../infrastructure/cache/cache.service';
-import { db } from '../infrastructure/database/drizzle';
-import { admins } from '../infrastructure/database/schemas';
-import { supabase } from '../infrastructure/database/supabase';
-import { logger } from '../infrastructure/logging/logger';
-import { responseSchema } from '../utils/responseServer';
+import { cacheService } from '../infrastructure/cache/cache.service.ts';
+import { db } from '../infrastructure/database/drizzle.ts';
+import { admins } from '../infrastructure/database/schemas.ts';
+import { supabase } from '../infrastructure/database/supabase.ts';
+import { logger } from '../infrastructure/logging/logger.ts';
+import { responseSchema } from '../utils/responseServer.ts';
 
 const middlewareName = '[Auth Middleware]';
 

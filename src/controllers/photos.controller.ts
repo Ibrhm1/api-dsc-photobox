@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
-import { photosService } from '../services/photos.service';
-import type { CreatePhotosType } from '../types/photos';
-import { responseSchema } from '../utils/responseServer';
+import { photosService } from '../services/photos.service.ts';
+import type { CreatePhotosType } from '../types/photos.d.ts';
+import { responseSchema } from '../utils/responseServer.ts';
 
 const create = async (req: Request, res: Response) => {
   const { sessionId } = req.params;
