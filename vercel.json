@@ -1,4 +1,8 @@
 {
-  "bunVersion": "1.x",
-  "rewrites": [{ "source": "/(.*)", "destination": "/server.ts" }]
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/api/index.ts"
+    }
+  ]
 }
