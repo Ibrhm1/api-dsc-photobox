@@ -1,5 +1,5 @@
-import { db } from '../infrastructure/database/drizzle.ts';
-import type { Transaction } from '../types/global.d.ts';
+import { db } from '../infrastructure/database/drizzle.js';
+import type { Transaction } from '../types/global.js';
 
 type callbackTransactionType<T> = (tx: Transaction) => Promise<T>;
 

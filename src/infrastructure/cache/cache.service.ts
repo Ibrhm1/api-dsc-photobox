@@ -1,6 +1,6 @@
-import type { CacheKeyType, SetCacheType } from '../../types/cache.d.ts';
-import { logger } from '../logging/logger.ts';
-import { redis } from './ioredis.client.ts';
+import type { CacheKeyType, SetCacheType } from '../../types/cache.js';
+import { logger } from '../logging/logger.js';
+import { redis } from './ioredis.client.js';
 
 const serviceName = '[Cache Service]';
 

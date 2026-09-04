@@ -1,5 +1,5 @@
 import z from 'zod';
-import { emailActiveValidation, passwordSchema } from './global.validation.ts';
+import { emailActiveValidation, passwordSchema } from './global.validation.js';
 
 const registerAdminValidation = z.object({
   email: emailActiveValidation,

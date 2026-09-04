@@ -1,5 +1,5 @@
 import type { Response } from 'express';
-import { contextStorage } from '../infrastructure/logging/context.ts';
+import { contextStorage } from '../infrastructure/logging/context.js';
 
 type ResponseParamsType = {
   res: Response;

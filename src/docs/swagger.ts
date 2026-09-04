@@ -1,13 +1,13 @@
 import swaggerJsdoc from 'swagger-jsdoc';
-import { env } from '../utils/env.ts';
-import { adminPath } from './path/admin.path.ts';
-import { customerPath } from './path/customer.path.ts';
-import { photoSessionPath } from './path/photoSession.path.ts';
-import { photosPath } from './path/photos.path.ts';
-import { adminSchema } from './schemas/admin.schema.ts';
-import { customerSchema } from './schemas/customer.schema.ts';
-import { photoSessionSchema } from './schemas/photoSession.schema.ts';
-import { photosSchema } from './schemas/photos.schema.ts';
+import { env } from '../utils/env.js';
+import { adminPath } from './path/admin.path.js';
+import { customerPath } from './path/customer.path.js';
+import { photoSessionPath } from './path/photoSession.path.js';
+import { photosPath } from './path/photos.path.js';
+import { adminSchema } from './schemas/admin.schema.js';
+import { customerSchema } from './schemas/customer.schema.js';
+import { photoSessionSchema } from './schemas/photoSession.schema.js';
+import { photosSchema } from './schemas/photos.schema.js';
 
 const options: swaggerJsdoc.Options = {
   definition: {

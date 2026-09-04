@@ -2,14 +2,14 @@ import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
 import swaggerUi from 'swagger-ui-express';
-import { swaggerSpec } from './docs/swagger.ts';
-import { errorMiddleware } from './middlewares/error.middleware.ts';
-import { notFoundMiddleware } from './middlewares/notFound.middleware.ts';
-import { globalRateLimiter } from './middlewares/rateLimit.middleware.ts';
-import { requestIdMiddleware } from './middlewares/requestId.middleware.ts';
-import healthRoute from './routes/health.route.ts';
-import router from './routes/route.ts';
-import { env } from './utils/env.ts';
+import { swaggerSpec } from './docs/swagger.js';
+import { errorMiddleware } from './middlewares/error.middleware.js';
+import { notFoundMiddleware } from './middlewares/notFound.middleware.js';
+import { globalRateLimiter } from './middlewares/rateLimit.middleware.js';
+import { requestIdMiddleware } from './middlewares/requestId.middleware.js';
+import healthRoute from './routes/health.route.js';
+import router from './routes/route.js';
+import { env } from './utils/env.js';
 
 const app = express();
 

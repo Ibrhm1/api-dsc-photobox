@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { photoSessionsController } from '../controllers/photoSessions.controller.ts';
+import { photoSessionsController } from '../controllers/photoSessions.controller.js';
 
 const photoSessionsRoute = Router();
 

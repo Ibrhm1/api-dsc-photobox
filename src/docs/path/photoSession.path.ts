@@ -1,5 +1,5 @@
-import { responseError } from '../response/error.response.ts';
-import { responseSuccess } from '../response/success.response.ts';
+import { responseError } from '../response/error.response.js';
+import { responseSuccess } from '../response/success.response.js';
 
 const tags = ['Photo Sessions'];
 

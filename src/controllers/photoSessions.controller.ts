@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
-import { photoSessionsService } from '../services/photoSessions.service.ts';
-import { responseSchema } from '../utils/responseServer.ts';
+import { photoSessionsService } from '../services/photoSessions.service.js';
+import { responseSchema } from '../utils/responseServer.js';
 
 const create = async (req: Request, res: Response) => {
   const photoSession = await photoSessionsService.createNewPhotoSession();

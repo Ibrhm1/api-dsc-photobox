@@ -1,8 +1,8 @@
 import type { NextFunction, Request, Response } from 'express';
 import { ZodError } from 'zod';
-import { AppError } from '../errors/appError.ts';
-import { logger } from '../infrastructure/logging/logger.ts';
-import { responseSchema } from '../utils/responseServer.ts';
+import { AppError } from '../errors/appError.js';
+import { logger } from '../infrastructure/logging/logger.js';
+import { responseSchema } from '../utils/responseServer.js';
 
 interface PostgresErrorLike extends Error {
   code: string;

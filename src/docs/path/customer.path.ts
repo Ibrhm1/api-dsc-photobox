@@ -1,6 +1,6 @@
-import { requestBodyCustomer } from '../requestBodies/customer.requestBody.ts';
-import { responseError } from '../response/error.response.ts';
-import { responseSuccess } from '../response/success.response.ts';
+import { requestBodyCustomer } from '../requestBodies/customer.requestBody.js';
+import { responseError } from '../response/error.response.js';
+import { responseSuccess } from '../response/success.response.js';
 
 const tags = ['Customers'];
 

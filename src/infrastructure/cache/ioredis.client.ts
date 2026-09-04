@@ -1,6 +1,6 @@
 import { Redis } from 'ioredis';
-import { env } from '../../utils/env.ts';
-import { logger } from '../logging/logger.ts';
+import { env } from '../../utils/env.js';
+import { logger } from '../logging/logger.js';
 
 const serviceName = '[IoRedis Client]';
 

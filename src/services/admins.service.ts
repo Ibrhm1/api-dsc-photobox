@@ -1,19 +1,19 @@
-import { generateZipPhotos } from '../storage/zip.service.ts';
+import { generateZipPhotos } from '../storage/zip.service.js';
 import crypto from 'crypto';
-import { AppError } from '../errors/appError.ts';
+import { AppError } from '../errors/appError.js';
 import {
   cacheKey,
   cacheService,
-} from '../infrastructure/cache/cache.service.ts';
-import { logger } from '../infrastructure/logging/logger.ts';
-import { adminsRepository } from '../repositories/admins.repository.ts';
-import storageService from '../storage/storage.service.ts';
+} from '../infrastructure/cache/cache.service.js';
+import { logger } from '../infrastructure/logging/logger.js';
+import { adminsRepository } from '../repositories/admins.repository.js';
+import storageService from '../storage/storage.service.js';
 import type {
   AdminType,
   LoginAdminType,
   RegisterAdminType,
-} from '../types/admins.d.ts';
-import { env } from '../utils/env.ts';
+} from '../types/admins.js';
+import { env } from '../utils/env.js';
 
 const service = '[Admins Service]';
 

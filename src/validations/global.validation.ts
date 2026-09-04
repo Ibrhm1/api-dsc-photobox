@@ -1,5 +1,5 @@
 import z from 'zod';
-import { isRealEmail } from '../utils/emailValidator.ts';
+import { isRealEmail } from '../utils/emailValidator.js';
 
 export const emailActiveValidation = z
   .email('Format email tidak valid')

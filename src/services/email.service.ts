@@ -1,8 +1,8 @@
 import nodemailer from 'nodemailer';
 import path from 'path';
-import { env } from '../utils/env.ts';
+import { env } from '../utils/env.js';
 import ejs from 'ejs';
-import { logger } from '../infrastructure/logging/logger.ts';
+import { logger } from '../infrastructure/logging/logger.js';
 
 export const transporter = nodemailer.createTransport({
   service: env.MAIL_SERVICE,

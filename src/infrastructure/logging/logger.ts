@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import pino from 'pino';
-import { env } from '../../utils/env.ts';
-import { contextStorage } from './context.ts';
+import { env } from '../../utils/env.js';
+import { contextStorage } from './context.js';
 
 const isDev = env.NODE_ENV === 'development';
 

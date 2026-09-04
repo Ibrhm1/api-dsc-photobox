@@ -1,4 +1,4 @@
-import { envSchema } from '../validations/env.validation.ts';
+import { envSchema } from '../validations/env.validation.js';
 
 const result = envSchema.safeParse(process.env);
 

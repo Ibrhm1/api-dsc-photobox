@@ -1,9 +1,9 @@
 import {
   requestBodyLoginAdmin,
   requestBodyRegisterAdmin,
-} from '../requestBodies/admin.requestBody.ts';
-import { responseError } from '../response/error.response.ts';
-import { responseSuccess } from '../response/success.response.ts';
+} from '../requestBodies/admin.requestBody.js';
+import { responseError } from '../response/error.response.js';
+import { responseSuccess } from '../response/success.response.js';
 
 const tags = ['Admins'];
 
