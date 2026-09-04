@@ -1,5 +1,5 @@
 {
-  "name": "backend-bun",
+  "name": "api-backend-dsc-photoboth",
   "module": "index.ts",
   "type": "module",
   "private": true,

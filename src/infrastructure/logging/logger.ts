@@ -50,7 +50,7 @@ export const logger = pino({
   transport: {
     targets: [
       {
-        target: usePretty ? 'pino-pretty' : 'pino/file',
+        target: 'pino-pretty',
         options: usePretty
           ? {
               colorize: true,
@@ -60,14 +60,6 @@ export const logger = pino({
             }
           : { destination: 1 },
         level: isDev ? 'debug' : 'info',
-      },
-      {
-        target: 'pino/file',
-        options: {
-          destination: './logs/app.log',
-          mkdir: false, // Di-set ke false karena folder logs sudah dibuat di atas secara aman
-        },
-        level: 'info',
       },
     ],
   },
