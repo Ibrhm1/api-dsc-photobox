@@ -8,11 +8,6 @@ import { contextStorage } from './context.ts';
 const isDev = env.NODE_ENV === 'development';
 const usePretty = isDev && pinoPretty;
 
-const logsDir = path.resolve(process.cwd(), 'logs');
-if (!fs.existsSync(logsDir)) {
-  fs.mkdirSync(logsDir, { recursive: true });
-}
-
 export const logger = pino({
   level: isDev ? 'debug' : 'info',
   timestamp: pino.stdTimeFunctions.isoTime,
