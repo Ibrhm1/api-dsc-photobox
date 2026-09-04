@@ -1,11 +1,15 @@
 import { eq, desc } from 'drizzle-orm';
-import { db } from '../infrastructure/database/drizzle.js';
-import { photoSessions, photos, customers } from '../infrastructure/database/schemas.js';
+import { db } from '../infrastructure/database/drizzle.ts';
+import {
+  photoSessions,
+  photos,
+  customers,
+} from '../infrastructure/database/schemas.ts';
 import type {
   InsertPhotoSessionsType,
   UpdateZipUrlPhotoSessionsType,
-} from '../types/photoSessions.js';
-import type { Transaction } from '../types/global.js';
+} from '../types/photoSessions.d.ts';
+import type { Transaction } from '../types/global.d.ts';
 
 const createPhotoSession = async (
   dataPhotoSession: InsertPhotoSessionsType,

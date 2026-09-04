@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
-import { photoSessionsService } from '../services/photoSessions.service.js';
-import { responseSchema } from '../utils/responseServer.js';
+import { photoSessionsService } from '../services/photoSessions.service.ts';
+import { responseSchema } from '../utils/responseServer.ts';
 
 const create = async (req: Request, res: Response) => {
   const photoSession = await photoSessionsService.createNewPhotoSession();
@@ -14,7 +14,8 @@ const create = async (req: Request, res: Response) => {
 };
 
 const getGallery = async (req: Request, res: Response) => {
-  const { sessions, fromCache } = await photoSessionsService.getPublicGallerySessions();
+  const { sessions, fromCache } =
+    await photoSessionsService.getPublicGallerySessions();
 
   return responseSchema.success({
     res,

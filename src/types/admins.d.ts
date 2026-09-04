@@ -1,4 +1,4 @@
-import { admins } from '../infrastructure/database/schemas.js';
+import { admins } from '../infrastructure/database/schemas.ts';
 
 export type AdminType = typeof admins.$inferSelect;
 

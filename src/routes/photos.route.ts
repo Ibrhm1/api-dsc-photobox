@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { photosController } from '../controllers/photos.controller.js';
-import { uploadFiles } from '../middlewares/upload.middleware.js';
+import { photosController } from '../controllers/photos.controller.ts';
+import { uploadFiles } from '../middlewares/upload.middleware.ts';
 
 const photosRoute = Router();
 

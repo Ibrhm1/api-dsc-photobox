@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { env } from '../utils/env.js';
+import { env } from '../utils/env.ts';
 
 const healthRoute = Router();
 

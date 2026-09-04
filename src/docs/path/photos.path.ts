@@ -1,6 +1,6 @@
-import { requestBodyPhotos } from '../requestBodies/photos.requestBody.js';
-import { responseError } from '../response/error.response.js';
-import { responseSuccess } from '../response/success.response.js';
+import { requestBodyPhotos } from '../requestBodies/photos.requestBody.ts';
+import { responseError } from '../response/error.response.ts';
+import { responseSuccess } from '../response/success.response.ts';
 
 const tags = ['Photos'];
 

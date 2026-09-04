@@ -1,19 +1,12 @@
 import fs from 'fs';
 import path from 'path';
 import pino from 'pino';
-import { env } from '../../utils/env.js';
-import { contextStorage } from './context.js';
+import pinoPretty from 'pino-pretty';
+import { env } from '../../utils/env.ts';
+import { contextStorage } from './context.ts';
 
 const isDev = env.NODE_ENV === 'development';
-
-let hasPinoPretty = false;
-try {
-  require.resolve('pino-pretty');
-  hasPinoPretty = true;
-} catch {
-  hasPinoPretty = false;
-}
-const usePretty = isDev && hasPinoPretty;
+const usePretty = isDev && pinoPretty;
 
 const logsDir = path.resolve(process.cwd(), 'logs');
 if (!fs.existsSync(logsDir)) {

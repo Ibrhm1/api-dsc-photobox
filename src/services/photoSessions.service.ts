@@ -1,8 +1,8 @@
 import { nanoid } from 'nanoid';
-import { photoSessionsRepository } from '../repositories/photoSessions.repository.js';
-import { logger } from '../infrastructure/logging/logger.js';
-import { AppError } from '../errors/appError.js';
-import { cacheService } from '../infrastructure/cache/cache.service.js';
+import { photoSessionsRepository } from '../repositories/photoSessions.repository.ts';
+import { logger } from '../infrastructure/logging/logger.ts';
+import { AppError } from '../errors/appError.ts';
+import { cacheService } from '../infrastructure/cache/cache.service.ts';
 
 const serviceName = '[Photo Session Service]';
 

@@ -1,8 +1,8 @@
 import type { NextFunction, Request, Response } from 'express';
 import { ZodError } from 'zod';
-import { AppError } from '../errors/appError.js';
-import { logger } from '../infrastructure/logging/logger.js';
-import { responseSchema } from '../utils/responseServer.js';
+import { AppError } from '../errors/appError.ts';
+import { logger } from '../infrastructure/logging/logger.ts';
+import { responseSchema } from '../utils/responseServer.ts';
 
 interface PostgresErrorLike extends Error {
   code: string;
@@ -25,7 +25,9 @@ const isObject = (value: unknown): value is Record<string, unknown> => {
 };
 
 const isPostgresErrorLike = (value: unknown): value is PostgresErrorLike => {
-  return isObject(value) && typeof value.code === 'string' && value.code.length > 0;
+  return (
+    isObject(value) && typeof value.code === 'string' && value.code.length > 0
+  );
 };
 
 const extractPostgresError = (err: unknown): PostgresErrorLike | null => {
@@ -137,7 +139,9 @@ export const errorMiddleware = (
   // 2. Handle Drizzle / Postgres query errors
   if (isDrizzleError(err)) {
     const postgresError = extractPostgresError(err);
-    const mappedError = postgresError ? DRIZZLE_ERROR_MAP[postgresError.code] : null;
+    const mappedError = postgresError
+      ? DRIZZLE_ERROR_MAP[postgresError.code]
+      : null;
 
     logger.error(
       {
@@ -222,7 +226,9 @@ export const errorMiddleware = (
     return responseSchema.error({
       res,
       code: httpStatusCode,
-      message: httpError.expose ? httpError.message : 'Terjadi kesalahan pada request.',
+      message: httpError.expose
+        ? httpError.message
+        : 'Terjadi kesalahan pada request.',
       ...(isDevelopment ? { details: httpError.message } : {}),
     });
   }

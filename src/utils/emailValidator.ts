@@ -1,6 +1,6 @@
 import { createRequire } from 'module';
 import { Resolver } from 'dns/promises';
-import { logger } from '../infrastructure/logging/logger.js';
+import { logger } from '../infrastructure/logging/logger.ts';
 
 const require = createRequire(import.meta.url);
 const disposableDomains: string[] = require('disposable-email-domains');

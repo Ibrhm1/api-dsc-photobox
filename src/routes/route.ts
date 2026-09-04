@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { adminsRoute } from './admins.route.js';
-import { customersRoute } from './customers.route.js';
-import { photoSessionsRoute } from './photoSessions.route.js';
-import { photosRoute } from './photos.route.js';
+import { adminsRoute } from './admins.route.ts';
+import { customersRoute } from './customers.route.ts';
+import { photoSessionsRoute } from './photoSessions.route.ts';
+import { photosRoute } from './photos.route.ts';
 
 const router = Router();
 

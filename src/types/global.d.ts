@@ -1,7 +1,7 @@
 import type multer from 'multer';
 import type { Logger } from 'pino';
-import type { db } from '../infrastructure/database/drizzle.js';
-import type { AdminType } from './admins.js';
+import type { db } from '../infrastructure/database/drizzle.ts';
+import type { AdminType } from './admins.d.ts';
 
 declare global {
   namespace Express {
