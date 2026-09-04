@@ -1,6 +1,9 @@
+import { createRequire } from 'module';
 import { Resolver } from 'dns/promises';
-import disposableDomains from 'disposable-email-domains';
 import { logger } from '../infrastructure/logging/logger.js';
+
+const require = createRequire(import.meta.url);
+const disposableDomains: string[] = require('disposable-email-domains');
 
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const resolver = new Resolver();
