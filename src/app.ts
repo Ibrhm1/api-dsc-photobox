@@ -21,8 +21,8 @@ app.use(requestIdMiddleware);
 
 // Endpoint
 app.use('/', healthRoute);
-app.use('/api', globalRateLimiter, router);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/api', router);
+// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Error and 404 Handling
 app.use(notFoundMiddleware);
