@@ -154,7 +154,7 @@ const getAllCustomers = async (admin: AdminType, email?: string) => {
   const customers = await adminsRepository.getAllCustomers(email);
   if (!customers || customers.length === 0) {
     logger.warn({ service }, 'Gagal mendapatkan semua customers');
-    throw new AppError(400, 'Gagal mendapatkan semua customers');
+    throw new AppError(404, 'Gagal mendapatkan semua customers');
   }
 
   if (!email) {
@@ -250,35 +250,6 @@ const resetDatabaseAndStorage = async (admin: AdminType, pin: string) => {
   };
 };
 
-const exportAllFolderInBucket = async (pin: string, admin: AdminType) => {
-  logger.info(
-    { service, admin: admin.email },
-    'Proses export semua folder di bucket',
-  );
-
-  requirePin(pin, admin.email);
-
-  const { validFiles, filePaths } =
-    await storageService.downloadAllFilesFromBucket();
-
-  const zipBuffer = await generateZipPhotos(validFiles);
-
-  await storageService.deleteBucketFiles(filePaths);
-
-  // await adminsRepository.resetDatabase();
-  await cacheService.flush();
-
-  logger.info(
-    { service, admin: admin.email, fileCount: validFiles.length },
-    'Berhasil mengekspor dan menghapus semua data di bucket dan database',
-  );
-
-  return {
-    filename: `export-dsc-photobox-${Date.now()}.zip`,
-    buffer: zipBuffer,
-  };
-};
-
 export const adminsService = {
   registerAdmin,
   loginAdmin,
@@ -287,5 +258,4 @@ export const adminsService = {
   getAllCustomers,
   getAllSessionWithPhotosWithCustomer,
   resetDatabaseAndStorage,
-  exportAllFolderInBucket,
 };

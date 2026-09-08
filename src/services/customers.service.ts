@@ -1,4 +1,8 @@
 import { AppError } from '../errors/appError.ts';
+import {
+  cacheKey,
+  cacheService,
+} from '../infrastructure/cache/cache.service.js';
 import { logger } from '../infrastructure/logging/logger.ts';
 import { customersRepository } from '../repositories/customers.repository.ts';
 import { photoSessionsRepository } from '../repositories/photoSessions.repository.ts';
@@ -54,6 +58,8 @@ const createCustomerBySessionId = async (payload: InsertCustomersType) => {
     email: customer.email,
     zipUrl: isExistPhotoSession.zipUrl || '',
   });
+
+  await cacheService.del({ key: cacheKey.customers() });
 
   return customer;
 };

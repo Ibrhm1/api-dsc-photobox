@@ -99,6 +99,7 @@ const getAllSession = async () => {
         email: customers.email,
         npm: customers.npm,
         major: customers.major,
+        sessionId: customers.sessionId,
         phoneNumber: customers.phoneNumber,
         instagramUsername: customers.instagramUsername,
       },
@@ -106,17 +107,20 @@ const getAllSession = async () => {
         id: photos.id,
         fileName: photos.fileName,
         fileUrl: photos.fileUrl,
+        sessionId: photos.sessionId,
       },
       photoSession: {
         id: photoSessions.id,
         zipUrl: photoSessions.zipUrl,
+        createdAt: photoSessions.createdAt,
       },
     })
     .from(photoSessions)
-    .leftJoin(photos, eq(photoSessions.id, photos.sessionId))
-    .leftJoin(customers, eq(customers.sessionId, photoSessions.id))
+    .innerJoin(photos, eq(photos.sessionId, photoSessions.id))
+    .innerJoin(customers, eq(customers.sessionId, photoSessions.id))
     .groupBy(photoSessions.id, customers.id, photos.id)
-    .orderBy(desc(customers.createdAt));
+    .orderBy(desc(photoSessions.createdAt));
+
   return data;
 };
 

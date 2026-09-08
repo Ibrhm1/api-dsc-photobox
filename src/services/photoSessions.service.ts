@@ -2,7 +2,10 @@ import { nanoid } from 'nanoid';
 import { photoSessionsRepository } from '../repositories/photoSessions.repository.ts';
 import { logger } from '../infrastructure/logging/logger.ts';
 import { AppError } from '../errors/appError.ts';
-import { cacheService } from '../infrastructure/cache/cache.service.ts';
+import {
+  cacheKey,
+  cacheService,
+} from '../infrastructure/cache/cache.service.ts';
 
 const serviceName = '[Photo Session Service]';
 
@@ -18,6 +21,8 @@ const createNewPhotoSession = async () => {
     logger.error('Gagal membuat sesi foto');
     throw new AppError(400, 'Gagal membuat sesi foto');
   }
+
+  await cacheService.del({ key: cacheKey.session() });
 
   logger.info(
     {

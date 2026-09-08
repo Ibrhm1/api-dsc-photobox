@@ -45,7 +45,7 @@ export const logger = pino({
   transport: {
     targets: [
       {
-        target: 'pino-pretty',
+        target: isDev && usePretty ? 'pino-pretty' : 'pino/file',
         options: usePretty
           ? {
               colorize: true,

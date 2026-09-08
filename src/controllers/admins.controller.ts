@@ -101,26 +101,6 @@ const resetDatabase = async (req: Request, res: Response) => {
   });
 };
 
-const exportBucket = async (req: Request, res: Response) => {
-  const admin = req.admin as AdminType;
-  const pin = (req.body?.pin || req.query?.pin) as string;
-
-  if (!pin) {
-    throw new AppError(400, 'PIN wajib diisi');
-  }
-
-  const { filename, buffer } = await adminsService.exportAllFolderInBucket(
-    pin,
-    admin,
-  );
-
-  res.setHeader('Content-Type', 'application/zip');
-  res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
-  res.setHeader('Content-Length', buffer.length.toString());
-
-  return res.send(buffer);
-};
-
 export const adminsController = {
   register,
   login,
@@ -129,5 +109,4 @@ export const adminsController = {
   getAllCustomers,
   getAllSessions,
   resetDatabase,
-  exportBucket,
 };
