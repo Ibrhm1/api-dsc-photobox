@@ -1,6 +1,6 @@
-import type { Request } from 'express';
-import multer, { type FileFilterCallback } from 'multer';
-import { AppError } from '../errors/appError.ts';
+import type { Request } from "express";
+import multer, { type FileFilterCallback } from "multer";
+import { AppError } from "../errors/appError.ts";
 
 const storage = multer.memoryStorage();
 
@@ -9,11 +9,11 @@ const fileFilter = (
   file: Express.Multer.File,
   cb: FileFilterCallback,
 ) => {
-  const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+  const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
   if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new AppError(400, 'Hanya file gambar yang diizinkan.'));
+    cb(new AppError(400, "Hanya file gambar yang diizinkan."));
   }
 };
 
@@ -22,7 +22,7 @@ export const uploadFiles = (fieldName: string) => {
     storage,
     fileFilter,
     limits: {
-      fileSize: 1024 * 1024 * 5, // 3MB
+      fileSize: 1024 * 1024 * 10, // 3MB
     },
   }).array(fieldName, 20);
 };
