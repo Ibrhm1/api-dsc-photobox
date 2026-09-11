@@ -7,3 +7,4 @@ migrations/
 audit.md
 dist/
 test-emails.ts
+docs/

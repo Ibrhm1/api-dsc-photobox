@@ -1,28 +1,4 @@
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: dsc-photobox-backend
-    restart: unless-stopped
-    ports:
-      - '${PORT:-3000}:3000'
-    env_file:
-      - .env.production
-    environment:
-      PORT: 3000
-      HOST: 0.0.0.0
-      NODE_ENV: ${NODE_ENV:-production}
-      BASE_URL: ${BASE_URL:-http://localhost:3000}
-      ORIGIN_ALLOWED: ${ORIGIN_ALLOWED:-http://localhost:5173}
-      DATABASE_URL: ${DATABASE_URL}
-      SUPABASE_URL: ${SUPABASE_URL}
-      SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY}
-      SUPABASE_JWT_SECRET: ${SUPABASE_JWT_SECRET}
-      REDIS_URL: redis://redis:6379
-    depends_on:
-      - redis
-
   redis:
     image: mirror.gcr.io/library/redis:7-alpine
     container_name: dsc-photobox-redis
@@ -32,22 +8,22 @@ services:
     volumes:
       - redis_data:/data
 
-  # -------------------------------------------------------------
-  # PostgreSQL Database (Lokal - Opsional)
-  # Jika ingin menggunakan database lokal, silakan uncomment service ini
-  # -------------------------------------------------------------
-  # db:
-  #   image: mirror.gcr.io/library/postgres:15-alpine
-  #   container_name: dsc-photobox-db
-  #   restart: unless-stopped
-  #   ports:
-  #     - "5432:5432"
-  #   environment:
-  #     POSTGRES_USER: postgres
-  #     POSTGRES_PASSWORD: HTpdrRgyZeXZN0lv
-  #     POSTGRES_DB: dsc_photobox
-  #   volumes:
-  #     - postgres_data:/var/lib/postgresql/data
+# -------------------------------------------------------------
+# PostgreSQL Database (Lokal - Opsional)
+# Jika ingin menggunakan database lokal, silakan uncomment service ini
+# -------------------------------------------------------------
+# db:
+#   image: mirror.gcr.io/library/postgres:15-alpine
+#   container_name: dsc-photobox-db
+#   restart: unless-stopped
+#   ports:
+#     - "5432:5432"
+#   environment:
+#     POSTGRES_USER: postgres
+#     POSTGRES_PASSWORD: HTpdrRgyZeXZN0lv
+#     POSTGRES_DB: dsc_photobox
+#   volumes:
+#     - postgres_data:/var/lib/postgresql/data
 
 volumes:
   redis_data:

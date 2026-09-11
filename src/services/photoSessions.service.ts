@@ -1,13 +1,13 @@
-import { nanoid } from 'nanoid';
-import { photoSessionsRepository } from '../repositories/photoSessions.repository.ts';
-import { logger } from '../infrastructure/logging/logger.ts';
-import { AppError } from '../errors/appError.ts';
+import { nanoid } from "nanoid";
+import { photoSessionsRepository } from "../repositories/photoSessions.repository.ts";
+import { logger } from "../infrastructure/logging/logger.ts";
+import { AppError } from "../errors/appError.ts";
 import {
   cacheKey,
   cacheService,
-} from '../infrastructure/cache/cache.service.ts';
+} from "../infrastructure/cache/cache.service.ts";
 
-const serviceName = '[Photo Session Service]';
+const serviceName = "[Photo Session Service]";
 
 const createNewPhotoSession = async () => {
   const uuid = nanoid(6);
@@ -18,8 +18,8 @@ const createNewPhotoSession = async () => {
   });
 
   if (!photoSession) {
-    logger.error('Gagal membuat sesi foto');
-    throw new AppError(400, 'Gagal membuat sesi foto');
+    logger.error("Gagal membuat sesi foto");
+    throw new AppError(400, "Gagal membuat sesi foto");
   }
 
   await cacheService.del({ key: cacheKey.session() });
@@ -30,7 +30,7 @@ const createNewPhotoSession = async () => {
       id: photoSession.id,
       zipUrl: photoSession.zipUrl,
     },
-    'Berhasil menambahkan photo session',
+    "Berhasil menambahkan photo session",
   );
 
   return photoSession;
@@ -39,23 +39,23 @@ const createNewPhotoSession = async () => {
 const getPublicGallerySessions = async () => {
   logger.info(
     { service: serviceName },
-    'Proses mengambil semua data public gallery',
+    "Proses mengambil semua data public gallery",
   );
 
-  const cacheKeyGallery = 'public:gallery';
+  const cacheKeyGallery = "public:gallery";
   const cachedGallery = await cacheService.get<any[]>({ key: cacheKeyGallery });
   if (cachedGallery) {
     logger.info(
       { service: serviceName },
-      'Berhasil mengambil semua data public gallery dari cache',
+      "Berhasil mengambil semua data public gallery dari cache",
     );
     return { sessions: cachedGallery, fromCache: true };
   }
 
   const allSessions = await photoSessionsRepository.getGallerySessions();
   if (!allSessions) {
-    logger.warn({ service: serviceName }, 'Gagal mendapatkan data gallery');
-    throw new AppError(400, 'Gagal mendapatkan data gallery');
+    logger.warn({ service: serviceName }, "Gagal mendapatkan data gallery");
+    throw new AppError(400, "Gagal mendapatkan data gallery");
   }
 
   const groupedData = allSessions.reduce<Record<string, any>>((acc, row) => {
@@ -65,7 +65,7 @@ const getPublicGallerySessions = async () => {
       acc[sessionId] = {
         id: sessionId,
         createdAt: row.photoSession.createdAt,
-        name: row.customer?.name || 'Anonim',
+        name: row.customer?.name || "Anonim",
         photos: [],
       };
     }
@@ -90,13 +90,37 @@ const getPublicGallerySessions = async () => {
 
   logger.info(
     { service: serviceName, count: groupedSessions.length },
-    'Berhasil mendapatkan data public gallery',
+    "Berhasil mendapatkan data public gallery",
   );
 
   return { sessions: groupedSessions, fromCache: false };
 };
 
+const deletePhotoSessionCustomer = async (sessionId: string[]) => {
+  logger.info({ serviceName, sessionId }, "Proses menghapus sesi foto");
+
+  const [result] = await Promise.all(
+    sessionId.map(async (session) => {
+      const result = await photoSessionsRepository.deletePhotoSession(session);
+
+      if (!result) {
+        logger.warn({ serviceName, sessionId }, "Gagal menghapus sesi foto");
+        throw new AppError(400, "Gagal menghapus sesi foto");
+      }
+
+      return result;
+    }),
+  );
+
+  await cacheService.del({ key: cacheKey.session() });
+
+  logger.info({ serviceName, sessionId }, "Berhasil menghapus sesi foto");
+
+  return result;
+};
+
 export const photoSessionsService = {
   createNewPhotoSession,
   getPublicGallerySessions,
+  deletePhotoSessionCustomer,
 };

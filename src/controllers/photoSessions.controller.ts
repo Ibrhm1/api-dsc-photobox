@@ -1,6 +1,6 @@
-import type { Request, Response } from 'express';
-import { photoSessionsService } from '../services/photoSessions.service.ts';
-import { responseSchema } from '../utils/responseServer.ts';
+import type { Request, Response } from "express";
+import { photoSessionsService } from "../services/photoSessions.service.ts";
+import { responseSchema } from "../utils/responseServer.ts";
 
 const create = async (req: Request, res: Response) => {
   const photoSession = await photoSessionsService.createNewPhotoSession();
@@ -9,7 +9,7 @@ const create = async (req: Request, res: Response) => {
     res,
     code: 201,
     data: photoSession,
-    message: 'Berhasil menambahkan photo session',
+    message: "Berhasil menambahkan photo session",
   });
 };
 
@@ -21,12 +21,25 @@ const getGallery = async (req: Request, res: Response) => {
     res,
     code: 200,
     data: sessions,
-    message: 'Berhasil mendapatkan gallery photo sessions',
+    message: "Berhasil mendapatkan gallery photo sessions",
     fromCache,
+  });
+};
+
+const remove = async (req: Request, res: Response) => {
+  const { id } = req.body;
+
+  await photoSessionsService.deletePhotoSessionCustomer(id);
+
+  return responseSchema.success({
+    res,
+    code: 200,
+    message: "Berhasil menghapus sesi foto",
   });
 };
 
 export const photoSessionsController = {
   create,
   getGallery,
+  remove,
 };

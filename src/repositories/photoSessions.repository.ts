@@ -1,15 +1,15 @@
-import { eq, desc } from 'drizzle-orm';
-import { db } from '../infrastructure/database/drizzle.ts';
+import { eq, desc } from "drizzle-orm";
+import { db } from "../infrastructure/database/drizzle.ts";
 import {
   photoSessions,
   photos,
   customers,
-} from '../infrastructure/database/schemas.ts';
+} from "../infrastructure/database/schemas.ts";
 import type {
   InsertPhotoSessionsType,
   UpdateZipUrlPhotoSessionsType,
-} from '../types/photoSessions.d.ts';
-import type { Transaction } from '../types/global.d.ts';
+} from "../types/photoSessions.d.ts";
+import type { Transaction } from "../types/global.d.ts";
 
 const createPhotoSession = async (
   dataPhotoSession: InsertPhotoSessionsType,
@@ -69,9 +69,18 @@ const getGallerySessions = async () => {
   return data;
 };
 
+const deletePhotoSession = async (id: string) => {
+  const [result] = await db
+    .delete(photoSessions)
+    .where(eq(photoSessions.id, id))
+    .returning();
+  return result;
+};
+
 export const photoSessionsRepository = {
   createPhotoSession,
   findPhotoSessionById,
   updateZipUrlPhotoSession,
   getGallerySessions,
+  deletePhotoSession,
 };
