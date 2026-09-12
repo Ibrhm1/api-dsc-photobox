@@ -1,8 +1,8 @@
-import { desc, eq } from 'drizzle-orm';
-import { db } from '../infrastructure/database/drizzle.ts';
-import { customers, photos } from '../infrastructure/database/schemas.ts';
-import type { Transaction } from '../types/global.d.ts';
-import type { PhotosType } from '../types/photos.d.ts';
+import { desc, eq } from "drizzle-orm";
+import { db } from "../infrastructure/database/drizzle.ts";
+import { customers, photos } from "../infrastructure/database/schemas.ts";
+import type { Transaction } from "../types/global.d.ts";
+import type { PhotosType } from "../types/photos.d.ts";
 
 const createPhotos = async (data: PhotosType, tx?: Transaction) => {
   const query = tx || db;

@@ -1,43 +1,43 @@
-import crypto from 'crypto';
-import { AppError } from '../errors/appError.ts';
+import crypto from "crypto";
+import { AppError } from "../errors/appError.ts";
 import {
   cacheKey,
   cacheService,
-} from '../infrastructure/cache/cache.service.ts';
-import { logger } from '../infrastructure/logging/logger.ts';
-import { adminsRepository } from '../repositories/admins.repository.ts';
-import storageService from '../storage/storage.service.ts';
-import { generateZipPhotos } from '../storage/zip.service.ts';
+} from "../infrastructure/cache/cache.service.ts";
+import { logger } from "../infrastructure/logging/logger.ts";
+import { adminsRepository } from "../repositories/admins.repository.ts";
+import storageService from "../storage/storage.service.ts";
+import { generateZipPhotos } from "../storage/zip.service.ts";
 import type {
   AdminType,
   LoginAdminType,
   RegisterAdminType,
-} from '../types/admins.d.ts';
-import { env } from '../utils/env.ts';
+} from "../types/admins.d.ts";
+import { env } from "../utils/env.ts";
 
-const service = '[Admins Service]';
+const service = "[Admins Service]";
 
 const requirePin = (pin: string, email: string) => {
   const isPinMatch = pin === env.PIN;
   if (!isPinMatch) {
-    logger.warn({ service, email }, 'PIN tidak cocok');
-    throw new AppError(400, 'PIN tidak cocok');
+    logger.warn({ service, email }, "PIN tidak cocok");
+    throw new AppError(400, "PIN tidak cocok");
   }
 };
 
 const registerAdmin = async (data: RegisterAdminType) => {
-  logger.info({ service, email: data.email }, 'Proses register admin');
+  logger.info({ service, email: data.email }, "Proses register admin");
 
   const isPasswordMatch = data.password === data.confirmPassword;
   if (!isPasswordMatch) {
-    logger.warn({ service, email: data.email }, 'Password tidak cocok');
-    throw new AppError(400, 'Password tidak cocok');
+    logger.warn({ service, email: data.email }, "Password tidak cocok");
+    throw new AppError(400, "Password tidak cocok");
   }
 
   const { admin, error } = await adminsRepository.createAdmin(data);
   if (!admin || error) {
-    logger.warn({ service, email: data.email }, 'Admin gagal terdaftar');
-    throw new AppError(400, 'Admin gagal terdaftar');
+    logger.warn({ service, email: data.email }, "Admin gagal terdaftar");
+    throw new AppError(400, "Admin gagal terdaftar");
   }
 
   return admin;
@@ -46,7 +46,7 @@ const registerAdmin = async (data: RegisterAdminType) => {
 const loginAdmin = async (data: LoginAdminType) => {
   logger.info(
     { service, email: data.email, lastLogin: data.lastLogin },
-    'Proses login admin',
+    "Proses login admin",
   );
 
   const date = new Date();
@@ -58,9 +58,9 @@ const loginAdmin = async (data: LoginAdminType) => {
   if (!admin || !admin.updateLastLoginAdmin || error) {
     logger.warn(
       { service, email: data.email },
-      'Admin gagal login atau tidak terdaftar di database',
+      "Admin gagal login atau tidak terdaftar di database",
     );
-    throw new AppError(400, 'Admin gagal login atau tidak terdaftar');
+    throw new AppError(400, "Admin gagal login atau tidak terdaftar");
   }
 
   logger.info(
@@ -69,7 +69,7 @@ const loginAdmin = async (data: LoginAdminType) => {
       email: admin.session?.user.email,
       lastLogin: admin.updateLastLoginAdmin.lastLogin,
     },
-    'Login berhasil',
+    "Login berhasil",
   );
 
   return {
@@ -79,7 +79,7 @@ const loginAdmin = async (data: LoginAdminType) => {
 };
 
 const getAdminLogin = async (id: string) => {
-  logger.info({ service }, 'Proses mengambil data admin');
+  logger.info({ service }, "Proses mengambil data admin");
 
   const cacheKeyAdmin = cacheKey.admin(id);
   const adminCached = (await cacheService.get({
@@ -88,15 +88,15 @@ const getAdminLogin = async (id: string) => {
   if (adminCached) {
     logger.info(
       { service, ...adminCached },
-      'Berhasil mengambil data admin dari cache',
+      "Berhasil mengambil data admin dari cache",
     );
     return { admin: adminCached, fromCache: true };
   }
 
   const admin = await adminsRepository.getAdminLogin(id);
   if (!admin) {
-    logger.warn({ service }, 'Gagal mendapatkan data admin');
-    throw new AppError(404, 'Gagal mendapatkan data admin');
+    logger.warn({ service }, "Gagal mendapatkan data admin");
+    throw new AppError(404, "Gagal mendapatkan data admin");
   }
 
   await cacheService.set({
@@ -104,26 +104,26 @@ const getAdminLogin = async (id: string) => {
     data: admin,
   });
 
-  logger.info({ service, ...admin }, 'Admin berhasil mendapatkan data dirinya');
+  logger.info({ service, ...admin }, "Admin berhasil mendapatkan data dirinya");
 
   return { admin, fromCache: false };
 };
 
 const logoutAdmin = async (admin: AdminType, token?: string) => {
-  logger.info({ service, email: admin.email }, 'Proses logout admin');
+  logger.info({ service, email: admin.email }, "Proses logout admin");
 
   const error = await adminsRepository.adminLogOut();
   if (error) {
-    logger.warn({ service, email: admin.email }, 'Admin gagal logout');
-    throw new AppError(400, 'Admin gagal logout');
+    logger.warn({ service, email: admin.email }, "Admin gagal logout");
+    throw new AppError(400, "Admin gagal logout");
   }
 
-  logger.info({ service, email: admin.email }, 'Logout admin berhasil');
+  logger.info({ service, email: admin.email }, "Logout admin berhasil");
 
   await cacheService.del({ key: cacheKey.admin(admin.id) });
 
   if (token) {
-    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+    const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
     await cacheService.del({ key: cacheKey.authToken(tokenHash) });
   }
 
@@ -133,7 +133,7 @@ const logoutAdmin = async (admin: AdminType, token?: string) => {
 const getAllCustomers = async (admin: AdminType, email?: string) => {
   logger.info(
     { service, ...admin, ...(email && { customer: email }) },
-    'Proses mengambil semua customers',
+    "Proses mengambil semua customers",
   );
 
   const cacheKeyAllCustomer = cacheKey.customers();
@@ -145,7 +145,7 @@ const getAllCustomers = async (admin: AdminType, email?: string) => {
     if (customersCached) {
       logger.info(
         { service, ...admin },
-        'Berhasil mengambil customer dalam cahce',
+        "Berhasil mengambil customer dalam cahce",
       );
       return { customers: customersCached, fromCache: true };
     }
@@ -153,8 +153,8 @@ const getAllCustomers = async (admin: AdminType, email?: string) => {
 
   const customers = await adminsRepository.getAllCustomers(email);
   if (!customers || customers.length === 0) {
-    logger.warn({ service }, 'Gagal mendapatkan semua customers');
-    throw new AppError(404, 'Gagal mendapatkan semua customers');
+    logger.warn({ service }, "Gagal mendapatkan semua customers");
+    throw new AppError(404, "Gagal mendapatkan semua customers");
   }
 
   if (!email) {
@@ -167,29 +167,29 @@ const getAllCustomers = async (admin: AdminType, email?: string) => {
 
   logger.info(
     { service, count: customers.length },
-    'Berhasil mendapatkan semua customers',
+    "Berhasil mendapatkan semua customers",
   );
 
   return { customers, fromCache: false };
 };
 
 const getAllSessionWithPhotosWithCustomer = async () => {
-  logger.info({ service }, 'Proses mengambil semua data session');
+  logger.info({ service }, "Proses mengambil semua data session");
 
   const cacheKeyAllSession = cacheKey.session();
   const cachedAllSession = await cacheService.get({ key: cacheKeyAllSession });
   if (cachedAllSession) {
     logger.info(
       { service, ...cachedAllSession },
-      'Berhasil mengambil semua data session dari cache',
+      "Berhasil mengambil semua data session dari cache",
     );
     return { sessions: cachedAllSession, fromCache: true };
   }
 
   const allSessions = await adminsRepository.getAllSession();
   if (!allSessions) {
-    logger.warn({ service }, 'Gagal mendapatkan semua session');
-    throw new AppError(400, 'Gagal mendapatkan semua session');
+    logger.warn({ service }, "Gagal mendapatkan semua session");
+    throw new AppError(400, "Gagal mendapatkan semua session");
   }
 
   const groupedData = allSessions.reduce<Record<string, any>>((acc, row) => {
@@ -220,14 +220,14 @@ const getAllSessionWithPhotosWithCustomer = async () => {
 
   logger.info(
     { service, count: groupedSessions.length },
-    'Berhasil mendapatkan semua session',
+    "Berhasil mendapatkan semua session",
   );
 
   return { sessions: groupedSessions, fromCache: false };
 };
 
 const resetDatabaseAndStorage = async (admin: AdminType, pin: string) => {
-  logger.info({ service, admin }, 'Proses reset database dan storage');
+  logger.info({ service, admin }, "Proses reset database dan storage");
 
   requirePin(pin, admin.email);
 
@@ -243,7 +243,7 @@ const resetDatabaseAndStorage = async (admin: AdminType, pin: string) => {
 
   await cacheService.flush();
 
-  logger.info({ service, admin }, 'Berhasil reset database dan storage');
+  logger.info({ service, admin }, "Berhasil reset database dan storage");
 
   return {
     database: resetDatabaseResult,

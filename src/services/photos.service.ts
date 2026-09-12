@@ -1,17 +1,17 @@
-import { AppError } from '../errors/appError.ts';
-import { logger } from '../infrastructure/logging/logger.ts';
-import { photosRepository } from '../repositories/photos.repository.ts';
-import { photoSessionsRepository } from '../repositories/photoSessions.repository.ts';
-import storageService from '../storage/storage.service.ts';
-import { createZipSession } from '../storage/zip.service.ts';
-import type { CreatePhotosType } from '../types/photos.d.ts';
-import { handleTransaction } from '../utils/handleTransaction.ts';
+import { AppError } from "../errors/appError.ts";
+import { logger } from "../infrastructure/logging/logger.ts";
+import { photosRepository } from "../repositories/photos.repository.ts";
+import { photoSessionsRepository } from "../repositories/photoSessions.repository.ts";
+import storageService from "../storage/storage.service.ts";
+import { createZipSession } from "../storage/zip.service.ts";
+import type { CreatePhotosType } from "../types/photos.d.ts";
+import { handleTransaction } from "../utils/handleTransaction.ts";
 import {
   cacheKey,
   cacheService,
-} from '../infrastructure/cache/cache.service.ts';
+} from "../infrastructure/cache/cache.service.ts";
 
-const service = '[Photos Service]';
+const service = "[Photos Service]";
 
 const uploadPhotos = async (data: CreatePhotosType) => {
   logger.info(
@@ -20,7 +20,7 @@ const uploadPhotos = async (data: CreatePhotosType) => {
       sessionId: data.sessionId,
       files: data.files.length,
     },
-    'Proses upload photos',
+    "Proses upload photos",
   );
 
   const existingPhotoSession =
@@ -32,9 +32,9 @@ const uploadPhotos = async (data: CreatePhotosType) => {
         service,
         sessionId: data.sessionId,
       },
-      'Photo Session tidak ditemukan',
+      "Photo Session tidak ditemukan",
     );
-    throw new AppError(404, 'Photo Session tidak ditemukan');
+    throw new AppError(404, "Photo Session tidak ditemukan");
   }
 
   try {
@@ -53,9 +53,9 @@ const uploadPhotos = async (data: CreatePhotosType) => {
           files: data.files.length,
           storage: processUploadPhotos,
         },
-        'Gagal upload photos',
+        "Gagal upload photos",
       );
-      throw new AppError(400, 'Gagal upload photos');
+      throw new AppError(400, "Gagal upload photos");
     }
 
     logger.info(
@@ -64,7 +64,7 @@ const uploadPhotos = async (data: CreatePhotosType) => {
         sessionId: data.sessionId,
         files: processUploadPhotos.length,
       },
-      'Proses upload photos selesai',
+      "Proses upload photos selesai",
     );
 
     const photos = await handleTransaction(async (tx) => {
@@ -81,6 +81,15 @@ const uploadPhotos = async (data: CreatePhotosType) => {
           ),
         ),
       );
+
+      if (!photos) {
+        logger.warn(
+          { service, sessionId: data.sessionId },
+          "Gagal untuk menyimpan data photos",
+        );
+        throw new AppError(400, "Gagal untuk menyimpan data photos");
+      }
+
       const photosession =
         await photoSessionsRepository.updateZipUrlPhotoSession(
           {
@@ -93,7 +102,7 @@ const uploadPhotos = async (data: CreatePhotosType) => {
     });
 
     await cacheService.del({ key: cacheKey.session() });
-    await cacheService.del({ key: 'public:gallery' });
+    await cacheService.del({ key: "public:gallery" });
 
     return {
       zipUrl: photos.dataPhotosession?.zipUrl,
@@ -106,10 +115,10 @@ const uploadPhotos = async (data: CreatePhotosType) => {
         sessionId: data.sessionId,
         error,
       },
-      'Gagal upload photos',
+      "Gagal upload photos",
     );
     await storageService.deleteSessionFiles(data.sessionId);
-    throw new AppError(500, 'Gagal upload photos');
+    throw new AppError(500, "Gagal upload photos");
   }
 };
 
@@ -119,7 +128,7 @@ const getAllPhotosBySessionId = async (sessionId: string) => {
       service,
       sessionId,
     },
-    'Proses mengambil data photos',
+    "Proses mengambil data photos",
   );
 
   const existingPhotoSession =
@@ -131,9 +140,9 @@ const getAllPhotosBySessionId = async (sessionId: string) => {
         service,
         sessionId,
       },
-      'Photo Session tidak ditemukan',
+      "Photo Session tidak ditemukan",
     );
-    throw new AppError(404, 'Photo Session tidak ditemukan');
+    throw new AppError(404, "Photo Session tidak ditemukan");
   }
 
   const cacheKeyPhotos = cacheKey.photos(sessionId);
@@ -153,9 +162,9 @@ const getAllPhotosBySessionId = async (sessionId: string) => {
         service,
         sessionId,
       },
-      'Photos kosong',
+      "Photos kosong",
     );
-    throw new AppError(404, 'Photos kosong');
+    throw new AppError(404, "Photos kosong");
   }
 
   const customer = dbResults[0]?.customers;

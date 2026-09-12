@@ -22,7 +22,7 @@ export const uploadFiles = (fieldName: string) => {
     storage,
     fileFilter,
     limits: {
-      fileSize: 1024 * 1024 * 10, // 3MB
+      fileSize: 1024 * 1024 * 5, // 3MB
     },
   }).array(fieldName, 20);
 };

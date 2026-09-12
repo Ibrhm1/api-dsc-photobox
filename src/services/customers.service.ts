@@ -1,15 +1,16 @@
-import { AppError } from '../errors/appError.ts';
+import { AppError } from "../errors/appError.ts";
 import {
   cacheKey,
   cacheService,
-} from '../infrastructure/cache/cache.service.js';
-import { logger } from '../infrastructure/logging/logger.ts';
-import { customersRepository } from '../repositories/customers.repository.ts';
-import { photoSessionsRepository } from '../repositories/photoSessions.repository.ts';
-import type { InsertCustomersType } from '../types/customers.d.ts';
-import { sendMailToCustomer } from './email.service.ts';
+} from "../infrastructure/cache/cache.service.js";
+import { logger } from "../infrastructure/logging/logger.ts";
+import { customersRepository } from "../repositories/customers.repository.ts";
+import { photoSessionsRepository } from "../repositories/photoSessions.repository.ts";
+import type { InsertCustomersType } from "../types/customers.d.ts";
+import { env } from "../utils/env.ts";
+import { sendMailToCustomer } from "./email.service.ts";
 
-const serviceName = '[Customers Service]';
+const serviceName = "[Customers Service]";
 
 const createCustomerBySessionId = async (payload: InsertCustomersType) => {
   logger.info(
@@ -18,7 +19,7 @@ const createCustomerBySessionId = async (payload: InsertCustomersType) => {
       sessionId: payload.sessionId,
       email: payload.email,
     },
-    'Mulai proses pembuatan data customer',
+    "Mulai proses pembuatan data customer",
   );
 
   const isExistPhotoSession =
@@ -32,7 +33,7 @@ const createCustomerBySessionId = async (payload: InsertCustomersType) => {
         photoSession: isExistPhotoSession,
         email: payload.email,
       },
-      'Photo session tidak ditemukan',
+      "Photo session tidak ditemukan",
     );
     throw new AppError(404, `Photo session tidak ditemukan`);
   }
@@ -47,17 +48,18 @@ const createCustomerBySessionId = async (payload: InsertCustomersType) => {
         photoSession: isExistPhotoSession,
         email: payload.email,
       },
-      'Customer gagal dibuat',
+      "Customer gagal dibuat",
     );
     throw new AppError(400, `Gagal menambahkan data customer`);
   }
 
   //* Send Email
-  sendMailToCustomer({
-    name: customer.name,
-    email: customer.email,
-    zipUrl: isExistPhotoSession.zipUrl || '',
-  });
+  env.NODE_ENV === "production" &&
+    sendMailToCustomer({
+      name: customer.name,
+      email: customer.email,
+      zipUrl: isExistPhotoSession.zipUrl || "",
+    });
 
   await cacheService.del({ key: cacheKey.customers() });
 

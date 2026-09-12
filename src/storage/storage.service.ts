@@ -1,20 +1,20 @@
-import { AppError } from '../errors/appError.ts';
-import { supabase } from '../infrastructure/database/supabase.ts';
-import { logger } from '../infrastructure/logging/logger.ts';
-import type { UploadFileParamsType } from '../types/storage.d.ts';
+import { AppError } from "../errors/appError.ts";
+import { supabase } from "../infrastructure/database/supabase.ts";
+import { logger } from "../infrastructure/logging/logger.ts";
+import type { UploadFileParamsType } from "../types/storage.d.ts";
 
 export const storageConfig = {
-  bucketName: 'dsc-photobox-storage',
+  bucketName: "dsc-photobox-storage",
 };
 
-const serviceName = '[storageService]';
+const serviceName = "[storageService]";
 
 const formateNameFile = (
   originalname: string,
   index: number,
   prefix: string,
 ) => {
-  const fileExt = originalname.split('.').pop();
+  const fileExt = originalname.split(".").pop();
   return `${prefix.toLowerCase()}-dsc-photobox-(${index + 1}).${fileExt}`;
 };
 
@@ -25,7 +25,7 @@ const uploadFiles = ({ files, sessionId }: UploadFileParamsType) => {
       totalFiles: files.length,
       sessionId,
     },
-    'Memulai upload file',
+    "Memulai upload file",
   );
   return Promise.all(
     files.map(async (file, fileIdx) => {
@@ -36,7 +36,7 @@ const uploadFiles = ({ files, sessionId }: UploadFileParamsType) => {
       const { error } = await supabase.storage
         .from(storageConfig.bucketName)
         .upload(filePath, fileBody, {
-          cacheControl: '3600',
+          cacheControl: "3600",
           contentType: file.mimetype,
         });
 
@@ -46,9 +46,9 @@ const uploadFiles = ({ files, sessionId }: UploadFileParamsType) => {
             service: serviceName,
             ...error,
           },
-          'Gagal mengupload file',
+          "Gagal mengupload file",
         );
-        throw new AppError(500, `Gagal mengupload file`);
+        throw new AppError(400, `Gagal mengupload file`);
       }
 
       const { data } = supabase.storage
@@ -61,7 +61,7 @@ const uploadFiles = ({ files, sessionId }: UploadFileParamsType) => {
           fileName,
           sessionId,
         },
-        'Berhasil mengupload file',
+        "Berhasil mengupload file",
       );
 
       return {
@@ -78,7 +78,7 @@ const extractPathFromUrl = (publicUrl: string): string => {
   const urlParts = publicUrl.split(`/public/${storageConfig.bucketName}/`);
 
   if (urlParts.length !== 2) {
-    return '';
+    return "";
   }
 
   return urlParts[1] as string;
@@ -146,14 +146,14 @@ const deleteSessionFiles = async (sessionId: string) => {
         );
       } else {
         logger.info(
-          `${serviceName}: Rollback berhasil, menghapus files: ${pathsToDelete.join(', ')}`,
+          `${serviceName}: Rollback berhasil, menghapus files: ${pathsToDelete.join(", ")}`,
         );
       }
     }
   } catch (error) {
     const err = error as Error;
     logger.error(`${serviceName}: Gagal melakukan rollback: ${err.message}`);
-    throw new AppError(500, 'Gagal melakukan rollback');
+    throw new AppError(500, "Gagal melakukan rollback");
   }
 };
 
@@ -176,7 +176,7 @@ const downloadFilesFromSupabase = async (
             fileName: file.name,
             error: errorDownload,
           },
-          'Gagal mengambil file dari Supabase',
+          "Gagal mengambil file dari Supabase",
         );
         throw new AppError(500, `Gagal mengambil file dari Supabase`);
       }
@@ -202,7 +202,7 @@ const downloadAllFilesFromBucket = async (): Promise<{
 }> => {
   const filePaths: string[] = [];
 
-  const scanFolder = async (prefix: string = '') => {
+  const scanFolder = async (prefix: string = "") => {
     const { data, error } = await supabase.storage
       .from(storageConfig.bucketName)
       .list(prefix, { limit: 1000 });
@@ -210,7 +210,7 @@ const downloadAllFilesFromBucket = async (): Promise<{
     if (error || !data) return;
 
     for (const item of data) {
-      if (item.name === '.emptyFolderPlaceholder') continue;
+      if (item.name === ".emptyFolderPlaceholder") continue;
 
       const itemPath = prefix ? `${prefix}/${item.name}` : item.name;
 
@@ -222,10 +222,10 @@ const downloadAllFilesFromBucket = async (): Promise<{
     }
   };
 
-  await scanFolder('');
+  await scanFolder("");
 
   if (filePaths.length === 0) {
-    throw new AppError(404, 'Tidak ada file di dalam bucket untuk diekspor');
+    throw new AppError(404, "Tidak ada file di dalam bucket untuk diekspor");
   }
 
   const validFiles: { name: string; buffer: Buffer }[] = [];
@@ -239,7 +239,7 @@ const downloadAllFilesFromBucket = async (): Promise<{
       if (error || !data) {
         logger.warn(
           { service: serviceName, path, error },
-          'Gagal mengunduh file dari bucket',
+          "Gagal mengunduh file dari bucket",
         );
         return;
       }
@@ -250,7 +250,7 @@ const downloadAllFilesFromBucket = async (): Promise<{
   );
 
   if (validFiles.length === 0) {
-    throw new AppError(404, 'Gagal mengunduh file dari bucket');
+    throw new AppError(404, "Gagal mengunduh file dari bucket");
   }
 
   return { validFiles, filePaths };
@@ -266,7 +266,7 @@ const deleteBucketFiles = async (filePaths: string[]) => {
   if (error) {
     logger.error(
       { service: serviceName, error },
-      'Gagal menghapus file dari bucket',
+      "Gagal menghapus file dari bucket",
     );
     throw new AppError(
       500,
@@ -276,7 +276,7 @@ const deleteBucketFiles = async (filePaths: string[]) => {
 
   logger.info(
     { service: serviceName, count: filePaths.length },
-    'Berhasil menghapus file dari bucket',
+    "Berhasil menghapus file dari bucket",
   );
 };
 
